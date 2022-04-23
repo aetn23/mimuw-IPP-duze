@@ -32,3 +32,14 @@ void clear_str(String *str) {
     str->content[i] = NULL_CHAR;
   str->size = 0;
 }
+
+void free_string(String *str) {
+  if (str->content != NULL)
+    free(str->content);
+}
+
+void transfer_chars_to_string (String *string, char *chars, size_t chars_len) {
+  for (size_t i = 0; i < chars_len; i++) {
+    insert_str(string, chars[i], string->size);
+  }
+}

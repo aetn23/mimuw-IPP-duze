@@ -5,10 +5,19 @@
 #include "phone_forward.h"
 #include <assert.h>
 #include <string.h>
+#include "lists.h"
+#include "memory_management.h"
+#include "trie.h"
 
 #define MAX_LEN 23
 
 int main() {
+
+  Trie *trie = init_trie('0', "", 0);
+  Trie *trie2 = init_trie('1', "12", 2);
+  add_trie_to_node_list(&trie->children, trie2);
+  free_trie(trie);
+  /*
   char num1[MAX_LEN + 1], num2[MAX_LEN + 1];
   PhoneForward *pf;
   PhoneNumbers *pnum;
@@ -140,4 +149,5 @@ int main() {
   assert(phnumGet(pnum, 1) == NULL);
   phnumDelete(pnum);
   phfwdDelete(pf);
+   */
 }

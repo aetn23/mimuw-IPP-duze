@@ -3,18 +3,16 @@
 
 #include "my_string.h"
 
-typedef struct StringList StringList;
+typedef struct TrieNodeList TrieNodeList;
+typedef struct Trie Trie;
 
-struct StringList {
-  String string;
-  StringList *next;
+struct TrieNodeList {
+  Trie *node;
+  TrieNodeList *next;
 };
 
-typedef struct CharList CharList;
+void init_trie_node_list (TrieNodeList *list);
 
-struct CharList {
-  char c;
-  CharList *next;
-};
+void add_trie_to_node_list (TrieNodeList **list, Trie *node);
 
 #endif //_STRING_LIST_

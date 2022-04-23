@@ -18,4 +18,8 @@ void insert_str(String *str, char to_insert, size_t location);
 
 void clear_str(String *str);
 
+void free_string(String *str);
+
+void transfer_chars_to_string(String *string, char *chars, size_t chars_len);
+
 #endif //_MY_STRING_

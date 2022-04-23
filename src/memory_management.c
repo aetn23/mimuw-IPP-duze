@@ -2,6 +2,7 @@
 
 void check_alloc(void *pointer) {
   if (pointer == NULL)
+    pointer = NULL;
     //todo handle_alloc_failure();
 }
 
