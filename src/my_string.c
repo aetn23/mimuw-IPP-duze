@@ -48,7 +48,7 @@ void free_string(String *str) {
     free(str->content);
 }
 
-bool transfer_chars_to_string (String *string, char *chars, size_t chars_len) {
+bool transfer_chars_to_string (String *string, char const *chars, size_t chars_len) {
   for (size_t i = 0; i < chars_len; i++) {
     if (!insert_str(string, chars[i], string->size))
       return false;

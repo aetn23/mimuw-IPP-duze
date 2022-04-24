@@ -6,7 +6,7 @@
 typedef struct Trie Trie;
 
 typedef struct TrieNodeList {
-  Trie *nodes;
+  Trie **nodes;
   size_t size;
 } TrieNodeList;
 

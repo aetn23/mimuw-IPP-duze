@@ -12,7 +12,18 @@
 #define MAX_LEN 23
 
 int main() {
+  PhoneForward *pf = phfwdNew();
 
+  char *num1 = "134534";
+  char *num2 = "23456";
+  char *num3 = "123";
+  char *num4 = "829";
+
+  phfwdAdd(pf, num1, num2);
+  phfwdAdd(pf, num3, num4);
+
+  phfwdDelete(pf);
+  /*
   Trie trie;
   Trie trie2;
   Trie trie3;
@@ -29,7 +40,7 @@ int main() {
   test_add(&trie, trie5);
 
   free_trie(&trie);
-  /*
+
   char num1[MAX_LEN + 1], num2[MAX_LEN + 1];
   PhoneForward *pf;
   PhoneNumbers *pnum;
