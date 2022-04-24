@@ -13,10 +13,22 @@
 
 int main() {
 
-  Trie *trie = init_trie('0', "", 0);
-  Trie *trie2 = init_trie('1', "12", 2);
-  add_trie_to_node_list(&trie->children, trie2);
-  free_trie(trie);
+  Trie trie;
+  Trie trie2;
+  Trie trie3;
+  Trie trie4;
+  Trie trie5;
+  init_trie(&trie, '0', "23", 2);
+  init_trie(&trie2, '5', "232", 3);
+  init_trie(&trie3, '6', "233", 3);
+  init_trie(&trie4, '1', "2345", 4);
+  init_trie(&trie5, '1', "2345", 4);
+  test_add(&trie, trie2);
+  test_add(&trie, trie3);
+  test_add(&trie, trie4);
+  test_add(&trie, trie5);
+
+  free_trie(&trie);
   /*
   char num1[MAX_LEN + 1], num2[MAX_LEN + 1];
   PhoneForward *pf;
