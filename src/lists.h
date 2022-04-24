@@ -12,6 +12,6 @@ typedef struct TrieNodeList {
 
 void init_trie_node_list(TrieNodeList *list);
 
-void add_trie_to_node_list (TrieNodeList *list, Trie *node);
+bool add_trie_to_node_list(TrieNodeList *list, Trie *node);
 
 #endif //_STRING_LIST_

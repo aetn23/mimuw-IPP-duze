@@ -10,7 +10,7 @@ struct Trie {
   TrieNodeList children;
 };
 
-void init_trie(Trie *trie, char prefix, char *number, size_t number_size);
+bool init_trie(Trie *trie, char prefix, char *number, size_t number_size);
 
 void free_trie(Trie *trie);
 

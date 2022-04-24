@@ -2,12 +2,13 @@
 #define _MEMORY_MANAGMENT_
 
 #include <stdlib.h>
+#include <stdbool.h>
 
 
 #define START_ARRAY_SIZE 32
 #define REALLOC_MULTIPLIER 2
 
-void check_alloc(void *pointer);
+bool check_alloc(void *pointer);
 
 void *malloc_wrapper(size_t size);
 

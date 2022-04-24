@@ -3,9 +3,13 @@
 
 
 
-void init_string(String *str, const size_t size) {
+bool init_string(String *str, const size_t size) {
   if (size != 0) {
-    str->content = malloc_wrapper(sizeof(char) * START_ARRAY_SIZE);
+    str->content = malloc(sizeof(char) * START_ARRAY_SIZE);
+
+    if (!check_alloc(str->content))
+      return false;
+
     str->size = 0;
     str->allocated_size = START_ARRAY_SIZE;
   } else {
@@ -13,18 +17,24 @@ void init_string(String *str, const size_t size) {
     str->size = 0;
     str->allocated_size = START_ARRAY_SIZE;
   }
+  return true;
 }
 
 // There is no guarantee that string wil be null terminated after this.
-void insert_str(String *str, const char to_insert, const size_t location) {
+bool insert_str(String *str, const char to_insert, const size_t location) {
   while (location >= str->allocated_size) {
+    char *tmp = realloc_wrapper(str->content, sizeof(char) * str->allocated_size);
+
+    if (!check_alloc(tmp))
+      return false;
+
     str->allocated_size *= REALLOC_MULTIPLIER;
-    str->content =
-        realloc_wrapper(str->content, sizeof(char) * str->allocated_size);
+    str->content = tmp;
   }
 
   str->content[location] = to_insert;
   str->size++;
+  return true;
 }
 
 void clear_str(String *str) {
@@ -38,8 +48,10 @@ void free_string(String *str) {
     free(str->content);
 }
 
-void transfer_chars_to_string (String *string, char *chars, size_t chars_len) {
+bool transfer_chars_to_string (String *string, char *chars, size_t chars_len) {
   for (size_t i = 0; i < chars_len; i++) {
-    insert_str(string, chars[i], string->size);
+    if (!insert_str(string, chars[i], string->size))
+      return false;
   }
+  return true;
 }

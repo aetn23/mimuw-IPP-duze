@@ -1,9 +1,9 @@
 #include "memory_management.h"
 
-void check_alloc(void *pointer) {
+bool check_alloc(void *pointer) {
   if (pointer == NULL)
-    pointer = NULL;
-    //todo handle_alloc_failure();
+    return false;
+  return true;
 }
 
 void *malloc_wrapper(const size_t size) {
