@@ -104,7 +104,7 @@ void phfwdRemove(PhoneForward *pf, char const *num) {
 
   init_string(&num_str, num_len);
   transfer_chars_to_string(&num_str, num, num_len);
-  remove_subtree(pf->root, &num_str);
+  remove_subtree(&pf->root, &num_str);
 
   free_string(&num_str);
 

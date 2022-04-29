@@ -21,8 +21,9 @@ int main() {
   phfwdAdd(pf, num1, num2);
   phfwdAdd(pf, num3, num4);
 
-  //phfwdRemove(pf, "134");
-  //phfwdRemove(pf, "ASDASDAD");
+  phfwdRemove(pf, "123344567890");
+  phfwdRemove(pf, "123");
+  phfwdRemove(pf, "");
 
   phfwdDelete(pf);
   /*

@@ -69,18 +69,23 @@ void add_value(Trie *root, String *prefix, String *value) {
   }
 }
 
-
-void remove_subtree (Trie *root, String *value_to_remove) {
-  Trie *current_node = root;
+//Think if this can be done more nicely
+void remove_subtree (Trie **root, String *value_to_remove) {
+  Trie *current_node = *root;
+  Trie *previous_node = NULL;
   for (size_t i = 0; i < value_to_remove->size; i++) {
     Trie *potential_next_node = get_child(current_node, value_to_remove->content[i]);
 
     if (potential_next_node == NULL) {
       return;
     } 
-
+    previous_node = current_node;
     current_node = potential_next_node;
   }
-
+  if (previous_node != NULL)
+    previous_node->children[(size_t)(current_node->number - '0')] = NULL;
+  else
+    *root = NULL;
   free_trie(current_node);
+
 }
