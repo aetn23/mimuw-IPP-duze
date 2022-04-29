@@ -43,6 +43,7 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
   String num2_string;
   size_t num1_len = strlen(num1);
   size_t num2_len = strlen(num2);
+
   init_string(&num1_string, num1_len);
   init_string(&num2_string, num2_len);
   transfer_chars_to_string(&num1_string, num1, num1_len);
@@ -52,4 +53,16 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
 
   free_string(&num1_string);
   return true;
+}
+
+//todo write function that transfers char* contents to my string wrapper
+//todo validate possible erros
+void phfwdRemove(PhoneForward *pf, char const *num) {
+  String num_str;
+  size_t num_len = strlen(num);
+
+  init_string(&num_str, strlen(num));
+
+  free_string(&num_str);
+
 }

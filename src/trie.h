@@ -16,6 +16,6 @@ void free_trie(Trie *trie);
 
 void add_value(Trie *root, String *prefix, String *value);
 
-
+void remove_subtree (Trie *root, String *value_to_remove);
 
 #endif //_TRIE_
