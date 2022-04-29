@@ -24,8 +24,6 @@ set(SOURCE_FILES
     src/phone_forward.h
     src/phone_forward.c
     src/phone_forward_example.c
-        src/lists.h
-        src/lists.c
         src/trie.c
         src/trie.h
     src/my_string.c
