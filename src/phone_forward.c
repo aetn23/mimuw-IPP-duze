@@ -2,7 +2,6 @@
 
 #include "phone_forward.h"
 #include "trie.h"
-#include "lists.h"
 #include "memory_management.h"
 
 
@@ -47,12 +46,14 @@ bool push_back_numbers(PhoneNumbers *numbers, String number) {
 
   numbers->numbers_sequence[numbers->size] = number;
   numbers->size++;
+
+  return true;
 }
 
 void phnumDelete(PhoneNumbers *numbers) {
   for (size_t i = 0; i < numbers->size; i++)
     free_string(&numbers->numbers_sequence[i]);
-    
+
   free(numbers->numbers_sequence);
 }
 
@@ -101,7 +102,9 @@ void phfwdRemove(PhoneForward *pf, char const *num) {
   String num_str;
   size_t num_len = strlen(num);
 
-  init_string(&num_str, strlen(num));
+  init_string(&num_str, num_len);
+  transfer_chars_to_string(&num_str, num, num_len);
+  remove_subtree(pf->root, &num_str);
 
   free_string(&num_str);
 

@@ -10,7 +10,7 @@ bool init_trie(Trie **trie, char prefix, char *number, size_t number_size) {
   if (!check_alloc(trie))
     return false;
 
-  init_trie_node_list(&(*trie)->children);
+  (*trie)->children = calloc(ALPHABET_SIZE, sizeof(Trie*));
   if (!init_string(&(*trie)->forward_number, number_size + 1))
     return false;
 
@@ -25,23 +25,25 @@ bool init_trie(Trie **trie, char prefix, char *number, size_t number_size) {
 
 //todo rewrite this to avoid recurssion
 void free_trie(Trie *trie) {
+  if (trie == NULL)
+    return;
 
   free_string(&trie->forward_number);
-  for (size_t i = 0; i < trie->children.size; i++) {
-    free_trie(trie->children.nodes[i]);
+  for (size_t i = 0; i < ALPHABET_SIZE; i++) {
+    free_trie(trie->children[i]);
   }
-  free(trie->children.nodes);
+  free(trie->children);
   free(trie);
 }
 
 Trie *get_child(Trie *root, const char prefix) {
-  for (size_t i = 0; i < root->children.size; i++) {
-    if (root->children.nodes[i]->number == prefix)
-      return root->children.nodes[i];
-  }
-
-  return NULL;
+  return root->children[(size_t)(prefix - '0')];
 }
+
+void add_child_to_trie(Trie *root, Trie *child) {
+  root->children[(int)(child->number - '0')] = child;
+}
+
 //todo error checking
 //todo find out how does this work exactly
 void add_value(Trie *root, String *prefix, String *value) {
@@ -52,7 +54,7 @@ void add_value(Trie *root, String *prefix, String *value) {
     if (next_node == NULL) {
       Trie *potential_next_node;
       init_trie(&potential_next_node, prefix->content[i], EMPTY_STRING, 0);
-      add_trie_to_node_list(&current_node->children, potential_next_node);
+      add_child_to_trie(current_node, potential_next_node);
       current_node = potential_next_node;
     } else {
       current_node = next_node;

@@ -1,13 +1,16 @@
 #ifndef _TRIE_
 #define _TRIE_
 
+#define ALPHABET_SIZE 10
+
 #include "my_string.h"
-#include "lists.h"
+
+typedef struct Trie Trie;
 
 struct Trie {
   char number;
   String forward_number;
-  TrieNodeList children;
+  Trie **children;
 };
 
 bool init_trie(Trie **trie, char prefix, char *number, size_t number_size);

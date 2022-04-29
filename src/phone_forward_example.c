@@ -5,7 +5,6 @@
 #include "phone_forward.h"
 #include <assert.h>
 #include <string.h>
-#include "lists.h"
 #include "memory_management.h"
 #include "trie.h"
 
@@ -22,8 +21,8 @@ int main() {
   phfwdAdd(pf, num1, num2);
   phfwdAdd(pf, num3, num4);
 
-  phfwdRemove(pf, "134");
-  phfwdRemove(pf, "ASDASDAD");
+  //phfwdRemove(pf, "134");
+  //phfwdRemove(pf, "ASDASDAD");
 
   phfwdDelete(pf);
   /*
