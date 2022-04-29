@@ -4,6 +4,7 @@
 #include "trie.h"
 #include "memory_management.h"
 
+//todo inquire possibility of removal of double pointer
 bool init_trie(Trie **trie, char prefix, char *number, size_t number_size) {
   *trie = malloc(sizeof(Trie));
   if (!check_alloc(trie))

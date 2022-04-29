@@ -16,6 +16,46 @@ struct PhoneNumbers {
   size_t allocated_size;
 };
 
+bool init_phone_numbers(PhoneNumbers *numbers, size_t size) {
+    if (size != 0) {
+    numbers->numbers_sequence = malloc(sizeof(String) * size);
+
+    if (!check_alloc(numbers->numbers_sequence))
+      return false;
+
+    numbers->size = 0;
+    numbers->allocated_size = size;
+  } else {
+    numbers->numbers_sequence = NULL;
+    numbers->size = 0;
+    numbers->allocated_size = 0;
+  }
+  return true;
+}
+
+bool push_back_numbers(PhoneNumbers *numbers, String number) {
+  if (numbers->size == numbers->allocated_size) {
+    String *new_array = realloc(numbers->numbers_sequence, numbers->allocated_size*REALLOC_MULTIPLIER);
+
+    if (!check_alloc(new_array)) {
+      return false;
+    } 
+
+    numbers->numbers_sequence = new_array;
+    numbers->allocated_size *= REALLOC_MULTIPLIER;
+  }
+
+  numbers->numbers_sequence[numbers->size] = number;
+  numbers->size++;
+}
+
+void phnumDelete(PhoneNumbers *numbers) {
+  for (size_t i = 0; i < numbers->size; i++)
+    free_string(&numbers->numbers_sequence[i]);
+    
+  free(numbers->numbers_sequence);
+}
+
 PhoneForward *phfwdNew() {
   PhoneForward *result = malloc(sizeof(PhoneForward));
   if (!check_alloc(result))

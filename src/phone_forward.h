@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+
 /**
  * To jest struktura przechowująca przekierowania numerów telefonów.
  */

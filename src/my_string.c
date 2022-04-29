@@ -5,17 +5,17 @@
 
 bool init_string(String *str, const size_t size) {
   if (size != 0) {
-    str->content = malloc(sizeof(char) * START_ARRAY_SIZE);
+    str->content = malloc(sizeof(char) * size);
 
     if (!check_alloc(str->content))
       return false;
 
     str->size = 0;
-    str->allocated_size = START_ARRAY_SIZE;
+    str->allocated_size = size;
   } else {
     str->content = NULL;
     str->size = 0;
-    str->allocated_size = START_ARRAY_SIZE;
+    str->allocated_size = 0;
   }
   return true;
 }
