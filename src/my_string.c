@@ -23,7 +23,7 @@ bool init_string(String *str, const size_t size) {
 // There is no guarantee that string wil be null terminated after this.
 bool insert_str(String *str, const char to_insert, const size_t location) {
   while (location >= str->allocated_size) {
-    char *tmp = realloc_wrapper(str->content, sizeof(char) * str->allocated_size);
+    char *tmp = realloc_wrapper(str->content, sizeof(char) * str->allocated_size * REALLOC_MULTIPLIER);
 
     if (!check_alloc(tmp))
       return false;
@@ -50,8 +50,11 @@ void free_string(String *str) {
 
 bool transfer_chars_to_string (String *string, char const *chars, size_t chars_len) {
   for (size_t i = 0; i < chars_len; i++) {
-    if (!insert_str(string, chars[i], string->size))
+    if (!insert_str(string, chars[i], i))
       return false;
   }
+  if (!insert_str(string, NULL_CHAR, string->size))
+    return false;
+  string->size--;
   return true;
 }
