@@ -15,21 +15,22 @@ struct PhoneNumbers {
   size_t allocated_size;
 };
 
-bool init_phone_numbers(PhoneNumbers *numbers, size_t size) {
+PhoneNumbers *init_phone_numbers(size_t size) {
+    PhoneNumbers *result = malloc(sizeof(PhoneNumbers));
     if (size != 0) {
-    numbers->numbers_sequence = malloc(sizeof(String) * size);
+    result->numbers_sequence = malloc(sizeof(String) * size);
 
-    if (!check_alloc(numbers->numbers_sequence))
-      return false;
+    if (!check_alloc(result->numbers_sequence))
+      return NULL;
 
-    numbers->size = 0;
-    numbers->allocated_size = size;
+    result->size = 0;
+    result->allocated_size = size;
   } else {
-    numbers->numbers_sequence = NULL;
-    numbers->size = 0;
-    numbers->allocated_size = 0;
+    result->numbers_sequence = NULL;
+    result->size = 0;
+    result->allocated_size = 0;
   }
-  return true;
+  return result;
 }
 
 bool push_back_numbers(PhoneNumbers *numbers, String number) {
@@ -55,6 +56,8 @@ void phnumDelete(PhoneNumbers *numbers) {
     free_string(&numbers->numbers_sequence[i]);
 
   free(numbers->numbers_sequence);
+
+  free(numbers);
 }
 
 PhoneForward *phfwdNew() {
@@ -107,5 +110,26 @@ void phfwdRemove(PhoneForward *pf, char const *num) {
   remove_subtree(&pf->root, &num_str);
 
   free_string(&num_str);
+}
 
+char const *phnumGet(PhoneNumbers const *pnum, size_t idx) {
+  if (pnum == NULL || idx >= pnum->size)
+    return NULL;
+  return pnum->numbers_sequence[idx].content;
+}
+
+//todo validate inout
+PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
+  PhoneNumbers *result = init_phone_numbers(1);
+
+  String num_str;
+  size_t num_len = strlen(num);
+  init_string(&num_str, num_len);
+  transfer_chars_to_string(&num_str, num, num_len);
+
+  get_deepest_non_null_string_in_trie(pf->root, &num_str);
+
+  push_back_numbers(result, num_str);
+
+  return result;
 }

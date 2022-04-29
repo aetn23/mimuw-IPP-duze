@@ -5,8 +5,16 @@
 #include "phone_forward.h"
 #include <assert.h>
 #include <string.h>
+#include <stdio.h>
+
 #include "memory_management.h"
 #include "trie.h"
+
+struct PhoneNumbers {
+  String *numbers_sequence;
+  size_t size;
+  size_t allocated_size;
+};
 
 #define MAX_LEN 23
 
@@ -18,12 +26,17 @@ int main() {
   char *num3 = "123";
   char *num4 = "829";
 
+
+
   phfwdAdd(pf, num1, num2);
   phfwdAdd(pf, num3, num4);
 
+  PhoneNumbers *test = phfwdGet(pf, "1231111");
+  printf("%s\n", test->numbers_sequence->content);
+  phnumDelete(test);
+
   phfwdRemove(pf, "123344567890");
   phfwdRemove(pf, "123");
-  phfwdRemove(pf, "");
 
   phfwdDelete(pf);
   /*

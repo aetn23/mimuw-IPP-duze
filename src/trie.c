@@ -89,3 +89,23 @@ void remove_subtree (Trie **root, String *value_to_remove) {
   free_trie(current_node);
 
 }
+//todo rename
+bool get_deepest_non_null_string_in_trie (Trie *root, String *path) {
+  String *result = NULL;
+  Trie *current_node = root;
+  size_t i = 0; 
+  for (; i < path->size; i++) {
+    if (current_node == NULL) {
+      break;
+    } 
+
+    if(current_node->forward_number.content != NULL)
+        result = &current_node->forward_number;
+
+    current_node = get_child(current_node, path->content[i]);
+  }
+
+  if (!transfer_chars_to_string(path, result->content, result->size))
+    return false;
+  return true;
+}

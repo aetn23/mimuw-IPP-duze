@@ -21,4 +21,6 @@ void add_value(Trie *root, String *prefix, String *value);
 
 void remove_subtree (Trie **root, String *value_to_remove);
 
+bool get_deepest_non_null_string_in_trie (Trie *root, String *path);
+
 #endif //_TRIE_
