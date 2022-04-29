@@ -127,9 +127,12 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
   init_string(&num_str, num_len);
   transfer_chars_to_string(&num_str, num, num_len);
 
-  get_deepest_non_null_string_in_trie(pf->root, &num_str);
+  String forwarded_number;
+  init_string(&forwarded_number, START_ARRAY_SIZE);
 
-  push_back_numbers(result, num_str);
+  get_deepest_non_null_string_in_trie(pf->root, &num_str, &forwarded_number);
+
+  push_back_numbers(result, forwarded_number);
 
   return result;
 }

@@ -1,6 +1,5 @@
-#include "memory_management.h"
 #include "my_string.h"
-
+#include "memory_management.h"
 
 
 bool init_string(String *str, const size_t size) {
@@ -48,7 +47,7 @@ void free_string(String *str) {
     free(str->content);
 }
 
-bool transfer_chars_to_string (String *string, char const *chars, size_t chars_len) {
+bool transfer_chars_to_string(String *string, char const *chars, size_t chars_len) {
   for (size_t i = 0; i < chars_len; i++) {
     if (!insert_str(string, chars[i], i))
       return false;
@@ -56,5 +55,19 @@ bool transfer_chars_to_string (String *string, char const *chars, size_t chars_l
   if (!insert_str(string, NULL_CHAR, string->size))
     return false;
   string->size--;
+  return true;
+}
+
+bool concatate_from_to(String *first, String *second, size_t from, size_t to, String *result) {
+  if (!init_string(result, first->size + (to - from + 1)))
+    return false;
+  for (size_t i = 0; i < first->size; i++) {
+    insert_str(result, first->content[i], result->size);
+  }
+
+  for (size_t i = from; i <= to; i++) {
+    insert_str(result, second->content[i], result->size);
+  }
+  insert_str(result, NULL_CHAR, result->size);
   return true;
 }

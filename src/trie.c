@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "trie.h"
 #include "memory_management.h"
+#include "trie.h"
 
 //todo inquire possibility of removal of double pointer
 bool init_trie(Trie **trie, char prefix, char *number, size_t number_size) {
@@ -10,7 +10,7 @@ bool init_trie(Trie **trie, char prefix, char *number, size_t number_size) {
   if (!check_alloc(trie))
     return false;
 
-  (*trie)->children = calloc(ALPHABET_SIZE, sizeof(Trie*));
+  (*trie)->children = calloc(ALPHABET_SIZE, sizeof(Trie *));
   if (!init_string(&(*trie)->forward_number, number_size + 1))
     return false;
 
@@ -37,11 +37,11 @@ void free_trie(Trie *trie) {
 }
 
 Trie *get_child(Trie *root, const char prefix) {
-  return root->children[(size_t)(prefix - '0')];
+  return root->children[(size_t) (prefix - '0')];
 }
 
 void add_child_to_trie(Trie *root, Trie *child) {
-  root->children[(int)(child->number - '0')] = child;
+  root->children[(int) (child->number - '0')] = child;
 }
 
 //todo error checking
@@ -70,7 +70,7 @@ void add_value(Trie *root, String *prefix, String *value) {
 }
 
 //Think if this can be done more nicely
-void remove_subtree (Trie **root, String *value_to_remove) {
+void remove_subtree(Trie **root, String *value_to_remove) {
   Trie *current_node = *root;
   Trie *previous_node = NULL;
   for (size_t i = 0; i < value_to_remove->size; i++) {
@@ -78,34 +78,38 @@ void remove_subtree (Trie **root, String *value_to_remove) {
 
     if (potential_next_node == NULL) {
       return;
-    } 
+    }
     previous_node = current_node;
     current_node = potential_next_node;
   }
   if (previous_node != NULL)
-    previous_node->children[(size_t)(current_node->number - '0')] = NULL;
+    previous_node->children[(size_t) (current_node->number - '0')] = NULL;
   else
     *root = NULL;
   free_trie(current_node);
-
 }
 //todo rename
-bool get_deepest_non_null_string_in_trie (Trie *root, String *path) {
-  String *result = NULL;
+bool get_deepest_non_null_string_in_trie(Trie *root, String *path, String *result) {
+  String *potential_value = NULL;
   Trie *current_node = root;
-  size_t i = 0; 
+  size_t i = 0;
   for (; i < path->size; i++) {
     if (current_node == NULL) {
+      i++;
       break;
-    } 
+    }
 
-    if(current_node->forward_number.content != NULL)
-        result = &current_node->forward_number;
+    if (current_node->forward_number.content != NULL)
+      potential_value = &current_node->forward_number;
 
     current_node = get_child(current_node, path->content[i]);
   }
+  if (potential_value->content[0] == NULL_CHAR) {
+    transfer_chars_to_string(result, path->content, path->size);
+    return true;
+  }
 
-  if (!transfer_chars_to_string(path, result->content, result->size))
+  if (!concatate_from_to(potential_value, path, i - 1, path->size - 1, result))
     return false;
   return true;
 }
