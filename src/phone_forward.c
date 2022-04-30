@@ -132,7 +132,7 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
   String forwarded_number;
   init_string(&forwarded_number, START_ARRAY_SIZE);
 
-  get_deepest_non_null_string_in_trie(pf->root, &num_str, &forwarded_number);
+  get_deepest_nonempty_value(pf->root, &num_str, &forwarded_number);
 
   push_back_numbers(result, &forwarded_number);
 

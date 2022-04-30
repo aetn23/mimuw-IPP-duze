@@ -27,4 +27,6 @@ bool transfer_chars_to_string(String *string, char const *chars, size_t chars_le
 bool concatate_from_to(String *first, String *second, size_t from, size_t to, String *result);
 
 bool is_empty_string (String *string);
+
+int number_char_to_int (char number);
 #endif //_MY_STRING_

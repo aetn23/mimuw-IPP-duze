@@ -38,23 +38,22 @@ void free_trie(Trie *trie) {
 }
 
 Trie *get_child(Trie *root, const char prefix) {
-  return root->children[(size_t) (prefix - '0')];
+  return root->children[number_char_to_int(prefix)];
 }
 
 void add_child_to_trie(Trie *root, Trie *child) {
-  root->children[(int) (child->number - '0')] = child;
+  root->children[number_char_to_int(child->number)] = child;
 }
 
 //todo error checking
-//todo find out how does this work exactly
-void add_value(Trie *root, String *prefix, String *value) {
+void add_value(Trie *root, String *route, String *value) {
   Trie *current_node = root;
-  for (size_t i = 0; i < prefix->size; i++) {
-    Trie *next_node = get_child(current_node, prefix->content[i]);
+  for (size_t i = 0; i < route->size; i++) {
+    Trie *next_node = get_child(current_node, route->content[i]);
 
     if (next_node == NULL) {
       Trie *potential_next_node;
-      init_trie(&potential_next_node, prefix->content[i], EMPTY_STRING, 0);
+      init_trie(&potential_next_node, route->content[i], EMPTY_STRING, 0);
       add_child_to_trie(current_node, potential_next_node);
       current_node = potential_next_node;
     } else {
@@ -71,11 +70,12 @@ void add_value(Trie *root, String *prefix, String *value) {
 }
 
 //Think if this can be done more nicely
-void remove_subtree(Trie **root, String *value_to_remove) {
+void remove_subtree(Trie **root, String *route_to_subtree) {
   Trie *current_node = *root;
   Trie *previous_node = NULL;
-  for (size_t i = 0; i < value_to_remove->size; i++) {
-    Trie *potential_next_node = get_child(current_node, value_to_remove->content[i]);
+
+  for (size_t i = 0; i < route_to_subtree->size; i++) {
+    Trie *potential_next_node = get_child(current_node, route_to_subtree->content[i]);
 
     if (potential_next_node == NULL) {
       return;
@@ -83,21 +83,23 @@ void remove_subtree(Trie **root, String *value_to_remove) {
     previous_node = current_node;
     current_node = potential_next_node;
   }
+
   if (previous_node != NULL)
-    previous_node->children[(size_t) (current_node->number - '0')] = NULL;
+    previous_node->children[number_char_to_int(current_node->number)] = NULL;
   else
     *root = NULL;
+
   free_trie(current_node);
 }
+
 //todo rename
-bool get_deepest_non_null_string_in_trie(Trie *root, String *path, String *result) {
+bool get_deepest_nonempty_value(Trie *root, String *route, String *result) {
   String *potential_value = NULL;
   size_t potential_value_depth = 0;
   Trie *current_node = root;
-  size_t i = 0;
 
-  for (; i < path->size; i++) {
-    current_node = get_child(current_node, path->content[i]);
+  for (size_t i = 0; i < route->size; i++) {
+    current_node = get_child(current_node, route->content[i]);
 
     if (current_node == NULL) {
       break;
@@ -110,11 +112,11 @@ bool get_deepest_non_null_string_in_trie(Trie *root, String *path, String *resul
   }
 
   if (potential_value == NULL) {
-    transfer_chars_to_string(result, path->content, path->size);
+    transfer_chars_to_string(result, route->content, route->size);
     return true;
   }
 
-  if (!concatate_from_to(potential_value, path, potential_value_depth, path->size - 1, result))
+  if (!concatate_from_to(potential_value, route, potential_value_depth, route->size - 1, result))
     return false;
   return true;
 }

@@ -73,3 +73,7 @@ bool concatate_from_to(String *first, String *second, size_t from, size_t to, St
 bool is_empty_string (String *string) {
   return !(bool)strcmp(string->content, EMPTY_STRING);
 }
+
+int number_char_to_int (const char number) {
+  return (int)(number - '0');
+}
