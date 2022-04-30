@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "memory_management.h"
 #include "trie.h"
@@ -91,25 +92,59 @@ void remove_subtree(Trie **root, String *value_to_remove) {
 //todo rename
 bool get_deepest_non_null_string_in_trie(Trie *root, String *path, String *result) {
   String *potential_value = NULL;
+  size_t potential_value_depth = 0;
   Trie *current_node = root;
   size_t i = 0;
+
   for (; i < path->size; i++) {
+    current_node = get_child(current_node, path->content[i]);
+
     if (current_node == NULL) {
-      i++;
       break;
     }
 
-    if (current_node->forward_number.content != NULL)
+    if (!is_empty_string(&current_node->forward_number)) {
       potential_value = &current_node->forward_number;
-
-    current_node = get_child(current_node, path->content[i]);
+      potential_value_depth = i + 1;
+   }
   }
-  if (potential_value->content[0] == NULL_CHAR) {
+
+  if (potential_value == NULL) {
     transfer_chars_to_string(result, path->content, path->size);
     return true;
   }
 
-  if (!concatate_from_to(potential_value, path, i - 1, path->size - 1, result))
+  if (!concatate_from_to(potential_value, path, potential_value_depth, path->size - 1, result))
     return false;
   return true;
 }
+
+/*
+bool get_deepest_non_null_string_in_trie_old(Trie *root, String *path, String *result) {
+  String *potential_value = NULL;
+  size_t potential_value_depth = 0;
+  Trie *current_node = root;
+  size_t i = 0;
+
+  for (; i <= path->size; i++) {
+    if (current_node == NULL) {
+      break;
+    }
+
+    if (!is_empty_string(&current_node->forward_number)) {
+      potential_value = &current_node->forward_number;
+      potential_value_depth = i;
+    }
+    printf("%zu\n", i);
+    current_node = get_child(current_node, path->content[i]);
+  }
+
+  if (potential_value == NULL) {
+    transfer_chars_to_string(result, path->content, path->size);
+    return true;
+  }
+
+  if (!concatate_from_to(potential_value, path, potential_value_depth, path->size - 1, result))
+    return false;
+  return true;
+}*/

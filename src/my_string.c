@@ -69,3 +69,7 @@ bool concatate_from_to(String *first, String *second, size_t from, size_t to, St
   insert_str(result, NULL_CHAR, result->size);
   return true;
 }
+
+bool is_empty_string (String *string) {
+  return !(bool)strcmp(string->content, EMPTY_STRING);
+}

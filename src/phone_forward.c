@@ -52,6 +52,8 @@ bool push_back_numbers(PhoneNumbers *numbers, String *number) {
 }
 
 void phnumDelete(PhoneNumbers *numbers) {
+  if (numbers == NULL)
+    return;
   for (size_t i = 0; i < numbers->size; i++)
     free_string(&numbers->numbers_sequence[i]);
 

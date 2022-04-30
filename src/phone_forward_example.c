@@ -84,16 +84,19 @@ int main() { /*
   assert(phfwdAdd(pf, num1, num2) == true);
 
   pnum = phfwdGet(pf, "12345");
-  printf("%s\n", pnum->numbers_sequence->content);
-  //assert(strcmp(phnumGet(pnum, 0), "945") == 0);
+  //printf("%s\n", pnum->numbers_sequence->content);
+  assert(strcmp(phnumGet(pnum, 0), "945") == 0);
   phnumDelete(pnum);
-    phfwdDelete(pf);
-    return 0;
+   // phfwdDelete(pf);
+    //return 0;
 
 
   pnum = phfwdGet(pf, "123456");
+    //printf("%s\n", pnum->numbers_sequence->content);
   assert(strcmp(phnumGet(pnum, 0), "777777") == 0);
   phnumDelete(pnum);
+    //phfwdDelete(pf);
+    //return 0;
 
   pnum = phfwdGet(pf, "997");
   assert(strcmp(phnumGet(pnum, 0), "997") == 0);
@@ -146,15 +149,17 @@ int main() { /*
   assert(phnumGet(pnum, 2) == NULL);
   phnumDelete(pnum);
 */
-  assert(phfwdAdd(pf, "A", "1") == false);
-  assert(phfwdAdd(pf, "1", "A") == false);
+/*
+        assert(phfwdAdd(pf, "A", "1") == false);
+        assert(phfwdAdd(pf, "1", "A") == false);
 
-  phfwdRemove(pf, "");
-  phfwdRemove(pf, NULL);
+        phfwdRemove(pf, "");
+        phfwdRemove(pf, NULL);
 
-  pnum = phfwdGet(pf, "A");
-  assert(phnumGet(pnum, 0) == NULL);
-  phnumDelete(pnum);
+        pnum = phfwdGet(pf, "A");
+        assert(phnumGet(pnum, 0) == NULL);
+        phnumDelete(pnum);
+        */
   /*
   pnum = phfwdReverse(pf, "A");
   assert(phnumGet(pnum, 0) == NULL);
@@ -174,11 +179,11 @@ int main() { /*
   assert(phnumGet(pnum, 3) == NULL);
   phnumDelete(pnum);
 */
-  phfwdDelete(pf);
-  pnum = NULL;
-  phnumDelete(pnum);
-  pf = NULL;
-  phfwdDelete(pf);
+        phfwdDelete(pf);
+        pnum = NULL;
+        phnumDelete(pnum);
+        pf = NULL;
+        phfwdDelete(pf);
 
   pf = phfwdNew();
   phfwdAdd(pf, "1234", "76");
@@ -192,7 +197,7 @@ int main() { /*
   pnum = phfwdReverse(pf, "7581");
   assert(strcmp(phnumGet(pnum, 0), "7581") == 0);
   assert(phnumGet(pnum, 1) == NULL);
-   */
-  phnumDelete(pnum);
+  
+  phnumDelete(pnum); */
   phfwdDelete(pf);
 }
