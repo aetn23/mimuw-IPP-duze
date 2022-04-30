@@ -85,8 +85,11 @@ int main() { /*
 
   pnum = phfwdGet(pf, "12345");
   printf("%s\n", pnum->numbers_sequence->content);
-  assert(strcmp(phnumGet(pnum, 0), "945") == 0);
+  //assert(strcmp(phnumGet(pnum, 0), "945") == 0);
   phnumDelete(pnum);
+    phfwdDelete(pf);
+    return 0;
+
 
   pnum = phfwdGet(pf, "123456");
   assert(strcmp(phnumGet(pnum, 0), "777777") == 0);

@@ -33,9 +33,9 @@ PhoneNumbers *init_phone_numbers(size_t size) {
   return result;
 }
 
-bool push_back_numbers(PhoneNumbers *numbers, String number) {
+bool push_back_numbers(PhoneNumbers *numbers, String *number) {
   if (numbers->size == numbers->allocated_size) {
-    String *new_array = realloc(numbers->numbers_sequence, numbers->allocated_size*REALLOC_MULTIPLIER);
+    String *new_array = realloc(numbers->numbers_sequence, numbers->allocated_size*REALLOC_MULTIPLIER*sizeof(String));
 
     if (!check_alloc(new_array)) {
       return false;
@@ -45,7 +45,7 @@ bool push_back_numbers(PhoneNumbers *numbers, String number) {
     numbers->allocated_size *= REALLOC_MULTIPLIER;
   }
 
-  numbers->numbers_sequence[numbers->size] = number;
+  numbers->numbers_sequence[numbers->size] = *number;
   numbers->size++;
 
   return true;
@@ -132,7 +132,9 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
 
   get_deepest_non_null_string_in_trie(pf->root, &num_str, &forwarded_number);
 
-  push_back_numbers(result, forwarded_number);
+  push_back_numbers(result, &forwarded_number);
+
+  free_string(&num_str);
 
   return result;
 }

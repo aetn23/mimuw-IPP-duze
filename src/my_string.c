@@ -22,7 +22,7 @@ bool init_string(String *str, const size_t size) {
 // There is no guarantee that string wil be null terminated after this.
 bool insert_str(String *str, const char to_insert, const size_t location) {
   while (location >= str->allocated_size) {
-    char *tmp = realloc_wrapper(str->content, sizeof(char) * str->allocated_size * REALLOC_MULTIPLIER);
+    char *tmp = realloc(str->content, sizeof(char) * str->allocated_size * REALLOC_MULTIPLIER);
 
     if (!check_alloc(tmp))
       return false;
@@ -59,8 +59,6 @@ bool transfer_chars_to_string(String *string, char const *chars, size_t chars_le
 }
 
 bool concatate_from_to(String *first, String *second, size_t from, size_t to, String *result) {
-  if (!init_string(result, first->size + (to - from + 1)))
-    return false;
   for (size_t i = 0; i < first->size; i++) {
     insert_str(result, first->content[i], result->size);
   }
