@@ -19,7 +19,7 @@ bool init_trie(Trie **trie, char prefix);
 
 void free_trie(Trie *trie);
 
-void add_value(Trie *root, String *prefix, String *value);
+bool add_value(Trie *root, String *route, String *value);
 
 void remove_subtree(Trie **root, char const *route_to_subtree);
 

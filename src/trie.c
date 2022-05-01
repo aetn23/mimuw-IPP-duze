@@ -17,7 +17,7 @@ bool init_trie(Trie **trie, char prefix) {
     return false;
   }
   
-  if (!init_string(&(*trie)->forward_number, 1)) {
+  if (!init_string(&(*trie)->forward_number, 0)) {
     free(*trie);
     free((*trie)->children);
     return false;
@@ -25,7 +25,6 @@ bool init_trie(Trie **trie, char prefix) {
 
   // In this case this operation will never fail, because memory for number has
   // been allocated in string initialization.
-  insert_str(&(*trie)->forward_number, NULL_CHAR, 0);
 
   (*trie)->number = prefix;
 
@@ -54,14 +53,16 @@ void add_child_to_trie(Trie *root, Trie *child) {
 }
 
 //todo error checking
-void add_value(Trie *root, String *route, String *value) {
+bool add_value(Trie *root, String *route, String *value) {
   Trie *current_node = root;
   for (size_t i = 0; i < route->size; i++) {
     Trie *next_node = get_child(current_node, route->content[i]);
 
     if (next_node == NULL) {
       Trie *potential_next_node;
-      init_trie(&potential_next_node, route->content[i]);
+      if (!init_trie(&potential_next_node, route->content[i]))
+        return false;
+
       add_child_to_trie(current_node, potential_next_node);
       current_node = potential_next_node;
     } else {
@@ -71,7 +72,6 @@ void add_value(Trie *root, String *route, String *value) {
   if (current_node->forward_number.size == 0) {
     current_node->forward_number = *value;
   } else {
-    //todo this free is unecessary
     free_string(&current_node->forward_number);
     current_node->forward_number = *value;
   }
@@ -116,14 +116,15 @@ bool get_deepest_nonempty_value(Trie *root, String *route, String *result) {
       break;
     }
 
-    if (!is_empty_string(&current_node->forward_number)) {
+    if (current_node->forward_number.size != 0) {
       potential_value = &current_node->forward_number;
       potential_value_depth = i + 1;
    }
   }
 
   if (potential_value == NULL) {
-    transfer_chars_to_string(result, route->content, route->size);
+    if (!concatate_from_to(result, route, 0, route->size - 1, result))
+      return false;
     return true;
   }
 
