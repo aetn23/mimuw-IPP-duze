@@ -4,8 +4,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-
-#define START_ARRAY_SIZE 1
+//todo change this constants
+#define START_ARRAY_SIZE_SMALL 1
+#define START_ARRAY_SIZE_BIG 1
 #define REALLOC_MULTIPLIER 2
 
 bool check_alloc(void *pointer);

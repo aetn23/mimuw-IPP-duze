@@ -72,7 +72,7 @@ PhoneForward *phfwdNew() {
     return NULL;
 
   Trie *trie;
-  if (!init_trie(&trie, NULL_CHAR, EMPTY_STRING, 0)) {
+  if (!init_trie(&trie, NULL_CHAR)) {
     return NULL;
   }
 
@@ -91,8 +91,8 @@ void phfwdDelete(PhoneForward *pf) {
 bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
   String num1_string;
   String num2_string;
-  init_string(&num1_string, START_ARRAY_SIZE);
-  init_string(&num2_string, START_ARRAY_SIZE);
+  init_string(&num1_string, START_ARRAY_SIZE_SMALL);
+  init_string(&num2_string, START_ARRAY_SIZE_SMALL);
 
   if (!parse_chars_to_string_wrapper(num1, &num1_string))
     return false;
@@ -123,11 +123,11 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
   PhoneNumbers *result = init_phone_numbers(1);
 
   String num_str;
-  init_string(&num_str, START_ARRAY_SIZE);
+  init_string(&num_str, START_ARRAY_SIZE_SMALL);
   parse_chars_to_string_wrapper(num, &num_str);
 
   String forwarded_number;
-  init_string(&forwarded_number, START_ARRAY_SIZE);
+  init_string(&forwarded_number, START_ARRAY_SIZE_SMALL);
 
   get_deepest_nonempty_value(pf->root, &num_str, &forwarded_number);
 

@@ -6,18 +6,26 @@
 #include "trie.h"
 
 //todo inquire possibility of removal of double pointer
-bool init_trie(Trie **trie, char prefix, char *number, size_t number_size) {
+bool init_trie(Trie **trie, char prefix) {
   *trie = malloc(sizeof(Trie));
   if (!check_alloc(trie))
     return false;
 
   (*trie)->children = calloc(ALPHABET_SIZE, sizeof(Trie *));
-  if (!init_string(&(*trie)->forward_number, number_size + 1))
+  if (!check_alloc((*trie)->children)) {
+    free(*trie);
     return false;
+  }
+  
+  if (!init_string(&(*trie)->forward_number, 1)) {
+    free(*trie);
+    free((*trie)->children);
+    return false;
+  }
 
   // In this case this operation will never fail, because memory for number has
   // been allocated in string initialization.
-  transfer_chars_to_string(&(*trie)->forward_number, number, number_size + 1);
+  insert_str(&(*trie)->forward_number, NULL_CHAR, 0);
 
   (*trie)->number = prefix;
 
@@ -53,7 +61,7 @@ void add_value(Trie *root, String *route, String *value) {
 
     if (next_node == NULL) {
       Trie *potential_next_node;
-      init_trie(&potential_next_node, route->content[i], EMPTY_STRING, 0);
+      init_trie(&potential_next_node, route->content[i]);
       add_child_to_trie(current_node, potential_next_node);
       current_node = potential_next_node;
     } else {

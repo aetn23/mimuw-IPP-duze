@@ -21,8 +21,6 @@ bool init_string(String *str, const size_t size) {
   return true;
 }
 
-
-
 // There is no guarantee that string wil be null terminated after this.
 bool insert_str(String *str, const char to_insert, const size_t location) {
   while (location >= str->allocated_size) {
@@ -45,14 +43,7 @@ bool null_terminate(String *str) {
     return false;
 
   str->size--;
-
   return true;
-}
-
-void clear_str(String *str) {
-  for (size_t i = 0; i < str->size; i++)
-    str->content[i] = NULL_CHAR;
-  str->size = 0;
 }
 
 void free_string(String *str) {
@@ -73,14 +64,16 @@ bool transfer_chars_to_string(String *string, char const *chars, const size_t ch
 
 bool concatate_from_to(const String *first, const String *second, const size_t from, const size_t to, String *result) {
   for (size_t i = 0; i < first->size; i++) {
-    insert_str(result, first->content[i], result->size);
+    if (!insert_str(result, first->content[i], result->size))
+      return false;
   }
 
   for (size_t i = from; i <= to; i++) {
-    insert_str(result, second->content[i], result->size);
+    if (!insert_str(result, second->content[i], result->size))
+      return false;
   }
-  insert_str(result, NULL_CHAR, result->size);
-  return true;
+
+  return null_terminate(result);
 }
 
 bool is_empty_string (const String *string) {
