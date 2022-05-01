@@ -21,7 +21,7 @@ void free_trie(Trie *trie);
 
 void add_value(Trie *root, String *prefix, String *value);
 
-void remove_subtree (Trie **root, String *value_to_remove);
+void remove_subtree(Trie **root, char const *route_to_subtree);
 
 bool get_deepest_nonempty_value(Trie *root, String *route, String *result);
 

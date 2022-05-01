@@ -109,13 +109,7 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
 //todo write function that transfers char* contents to my string wrapper
 //todo validate possible erros
 void phfwdRemove(PhoneForward *pf, char const *num) {
-  String num_str;
-  init_string(&num_str, START_ARRAY_SIZE);
-  parse_chars_to_string_wrapper(num, &num_str);
-
-  remove_subtree(&pf->root, &num_str);
-
-  free_string(&num_str);
+  remove_subtree(&pf->root, num);
 }
 
 char const *phnumGet(PhoneNumbers const *pnum, size_t idx) {
@@ -131,7 +125,7 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
   String num_str;
   init_string(&num_str, START_ARRAY_SIZE);
   parse_chars_to_string_wrapper(num, &num_str);
-  
+
   String forwarded_number;
   init_string(&forwarded_number, START_ARRAY_SIZE);
 
