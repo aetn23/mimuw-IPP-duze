@@ -1,3 +1,5 @@
+#include <ctype.h>
+
 #include "my_string.h"
 #include "memory_management.h"
 
@@ -19,6 +21,8 @@ bool init_string(String *str, const size_t size) {
   return true;
 }
 
+
+
 // There is no guarantee that string wil be null terminated after this.
 bool insert_str(String *str, const char to_insert, const size_t location) {
   while (location >= str->allocated_size) {
@@ -36,6 +40,15 @@ bool insert_str(String *str, const char to_insert, const size_t location) {
   return true;
 }
 
+bool null_terminate(String *str) {
+  if (!insert_str(str, NULL_CHAR, str->size))
+    return false;
+
+  str->size--;
+
+  return true;
+}
+
 void clear_str(String *str) {
   for (size_t i = 0; i < str->size; i++)
     str->content[i] = NULL_CHAR;
@@ -47,7 +60,7 @@ void free_string(String *str) {
     free(str->content);
 }
 
-bool transfer_chars_to_string(String *string, char const *chars, size_t chars_len) {
+bool transfer_chars_to_string(String *string, char const *chars, const size_t chars_len) {
   for (size_t i = 0; i < chars_len; i++) {
     if (!insert_str(string, chars[i], i))
       return false;
@@ -58,7 +71,7 @@ bool transfer_chars_to_string(String *string, char const *chars, size_t chars_le
   return true;
 }
 
-bool concatate_from_to(String *first, String *second, size_t from, size_t to, String *result) {
+bool concatate_from_to(const String *first, const String *second, const size_t from, const size_t to, String *result) {
   for (size_t i = 0; i < first->size; i++) {
     insert_str(result, first->content[i], result->size);
   }
@@ -70,10 +83,19 @@ bool concatate_from_to(String *first, String *second, size_t from, size_t to, St
   return true;
 }
 
-bool is_empty_string (String *string) {
+bool is_empty_string (const String *string) {
   return !(bool)strcmp(string->content, EMPTY_STRING);
 }
 
 int number_char_to_int (const char number) {
   return (int)(number - '0');
+}
+
+bool parse_chars_to_string_wrapper(char const *chars, String *result) {
+  for (size_t i = 0; chars[i] != NULL_CHAR; i++) {
+    if (!isdigit(chars[i]) || !insert_str(result, chars[i], result->size))
+      return false;
+  }
+
+  return null_terminate(result);
 }

@@ -120,33 +120,3 @@ bool get_deepest_nonempty_value(Trie *root, String *route, String *result) {
     return false;
   return true;
 }
-
-/*
-bool get_deepest_non_null_string_in_trie_old(Trie *root, String *path, String *result) {
-  String *potential_value = NULL;
-  size_t potential_value_depth = 0;
-  Trie *current_node = root;
-  size_t i = 0;
-
-  for (; i <= path->size; i++) {
-    if (current_node == NULL) {
-      break;
-    }
-
-    if (!is_empty_string(&current_node->forward_number)) {
-      potential_value = &current_node->forward_number;
-      potential_value_depth = i;
-    }
-    printf("%zu\n", i);
-    current_node = get_child(current_node, path->content[i]);
-  }
-
-  if (potential_value == NULL) {
-    transfer_chars_to_string(result, path->content, path->size);
-    return true;
-  }
-
-  if (!concatate_from_to(potential_value, path, potential_value_depth, path->size - 1, result))
-    return false;
-  return true;
-}*/

@@ -2,6 +2,8 @@
 #define _TRIE_
 
 #define ALPHABET_SIZE 10
+#define FIRST_ALPHABET_LETTER '0'
+#define LAST_ALPHABET_LETTER '9'
 
 #include "my_string.h"
 

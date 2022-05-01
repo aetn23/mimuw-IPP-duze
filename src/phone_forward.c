@@ -17,6 +17,9 @@ struct PhoneNumbers {
 
 PhoneNumbers *init_phone_numbers(size_t size) {
     PhoneNumbers *result = malloc(sizeof(PhoneNumbers));
+    if (!check_alloc(result))
+      return NULL;
+
     if (size != 0) {
     result->numbers_sequence = malloc(sizeof(String) * size);
 
@@ -54,6 +57,7 @@ bool push_back_numbers(PhoneNumbers *numbers, String *number) {
 void phnumDelete(PhoneNumbers *numbers) {
   if (numbers == NULL)
     return;
+
   for (size_t i = 0; i < numbers->size; i++)
     free_string(&numbers->numbers_sequence[i]);
 
@@ -87,13 +91,14 @@ void phfwdDelete(PhoneForward *pf) {
 bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
   String num1_string;
   String num2_string;
-  size_t num1_len = strlen(num1);
-  size_t num2_len = strlen(num2);
+  init_string(&num1_string, START_ARRAY_SIZE);
+  init_string(&num2_string, START_ARRAY_SIZE);
 
-  init_string(&num1_string, num1_len);
-  init_string(&num2_string, num2_len);
-  transfer_chars_to_string(&num1_string, num1, num1_len);
-  transfer_chars_to_string(&num2_string, num2, num2_len);
+  if (!parse_chars_to_string_wrapper(num1, &num1_string))
+    return false;
+
+  if (!parse_chars_to_string_wrapper(num2, &num2_string))
+    return false;
 
   add_value(pf->root, &num1_string, &num2_string);
 
@@ -105,10 +110,9 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
 //todo validate possible erros
 void phfwdRemove(PhoneForward *pf, char const *num) {
   String num_str;
-  size_t num_len = strlen(num);
+  init_string(&num_str, START_ARRAY_SIZE);
+  parse_chars_to_string_wrapper(num, &num_str);
 
-  init_string(&num_str, num_len);
-  transfer_chars_to_string(&num_str, num, num_len);
   remove_subtree(&pf->root, &num_str);
 
   free_string(&num_str);
@@ -125,10 +129,9 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
   PhoneNumbers *result = init_phone_numbers(1);
 
   String num_str;
-  size_t num_len = strlen(num);
-  init_string(&num_str, num_len);
-  transfer_chars_to_string(&num_str, num, num_len);
-
+  init_string(&num_str, START_ARRAY_SIZE);
+  parse_chars_to_string_wrapper(num, &num_str);
+  
   String forwarded_number;
   init_string(&forwarded_number, START_ARRAY_SIZE);
 
