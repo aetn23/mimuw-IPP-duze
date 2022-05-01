@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <ctype.h>
 
 #include "memory_management.h"
 #include "trie.h"
@@ -75,6 +76,8 @@ bool add_value(Trie *root, String *route, String *value) {
     free_string(&current_node->forward_number);
     current_node->forward_number = *value;
   }
+
+  return true;
 }
 
 //Think if this can be done more nicely
@@ -95,12 +98,15 @@ void remove_subtree(Trie **root, char const *route_to_subtree) {
     current_node = potential_next_node;
   }
 
-  if (previous_node != NULL)
+  if (previous_node != NULL) {
     previous_node->children[number_char_to_int(current_node->number)] = NULL;
-  else
-    *root = NULL;
-
-  free_trie(current_node);
+    free_trie(current_node);
+  } else {
+    for(size_t i = 0; i < ALPHABET_SIZE; i++) {
+      free_trie(current_node->children[i]);
+      current_node->children[i] = NULL;
+    }
+  }
 }
 
 //todo rename
