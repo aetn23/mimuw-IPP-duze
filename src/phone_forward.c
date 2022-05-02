@@ -93,6 +93,9 @@ void phfwdDelete(PhoneForward *pf) {
 }
 //todo take into account errors
 bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
+  if (pf == NULL || num1 == NULL || num2 == NULL)
+    return false;
+    
   String num1_string;
   String num2_string;
 
@@ -101,9 +104,12 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
 
   if (!init_string(&num2_string, START_ARRAY_SIZE_SMALL)) {
     free_string(&num1_string);
+    return false;
   }
 
-  if (!parse_chars_to_string_wrapper(num1, &num1_string) || !parse_chars_to_string_wrapper(num2, &num2_string) || !strcmp(num1, num2) || !add_value(pf->root, &num1_string, &num2_string)) {
+
+  if (!parse_chars_to_string_wrapper(num1, &num1_string) || !parse_chars_to_string_wrapper(num2, &num2_string)
+   || !strcmp(num1, num2) || is_empty_string(&num1_string) || is_empty_string(&num2_string) || !add_value(pf->root, &num1_string, &num2_string)) {
     free_string(&num1_string);
     free_string(&num2_string);
     return false;
@@ -158,3 +164,4 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
 
   return result;
 }
+PhoneNumbers *phfwdReverse(PhoneForward const *pf, char const *num) { pf = pf;num=num;return  NULL;}
