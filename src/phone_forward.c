@@ -122,7 +122,7 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
 //todo write function that transfers char* contents to my string wrapper
 //todo validate possible erros
 void phfwdRemove(PhoneForward *pf, char const *num) {
-  if(num != NULL)
+  if(num != NULL && pf != NULL)
     remove_subtree(&pf->root, num);
 }
 
@@ -134,10 +134,17 @@ char const *phnumGet(PhoneNumbers const *pnum, size_t idx) {
 
 //todo add edge case to return empty sequence if num is not correct number
 PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
+  if (pf == NULL) {
+    return NULL;
+  }
+
   PhoneNumbers *result = init_phone_numbers(1);
   if (!check_alloc(result)) {
     return NULL;
   }
+
+  if (num == NULL)
+    return result;
 
   String num_str;
   String forwarded_number;
@@ -145,7 +152,7 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
     phnumDelete(result);
     return NULL;
   }
-  
+
   if (!parse_chars_to_string_wrapper(num, &num_str) || !init_string(&forwarded_number, START_ARRAY_SIZE_SMALL)) {
     phnumDelete(result);
     free_string(&num_str);

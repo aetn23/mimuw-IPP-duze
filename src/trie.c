@@ -9,7 +9,7 @@
 //todo inquire possibility of removal of double pointer
 bool init_trie(Trie **trie, char prefix) {
   *trie = malloc(sizeof(Trie));
-  if (!check_alloc(trie))
+  if (!check_alloc(*trie))
     return false;
 
   (*trie)->children = calloc(ALPHABET_SIZE, sizeof(Trie *));
