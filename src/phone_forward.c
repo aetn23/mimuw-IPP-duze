@@ -75,7 +75,7 @@ PhoneForward *phfwdNew() {
     return NULL;
 
   Trie *trie;
-  if (!init_trie(&trie, NULL_CHAR)) {
+  if (!init_trie(&trie, NULL_CHAR, NULL)) {
     free(result);
     return NULL;
   }

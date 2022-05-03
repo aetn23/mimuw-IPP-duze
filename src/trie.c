@@ -7,7 +7,7 @@
 #include "trie.h"
 
 //todo inquire possibility of removal of double pointer
-bool init_trie(Trie **trie, char prefix) {
+bool init_trie(Trie **trie, char prefix, Trie *parent) {
   *trie = malloc(sizeof(Trie));
   if (!check_alloc(*trie))
     return false;
@@ -28,12 +28,13 @@ bool init_trie(Trie **trie, char prefix) {
   // been allocated in string initialization.
 
   (*trie)->number = prefix;
+  (*trie)->parent = parent;
 
   return true;
 }
 
 //todo rewrite this to avoid recurssion
-void free_trie(Trie *trie) {
+void free_trie_old(Trie *trie) {
   if (trie == NULL)
     return;
 
@@ -43,6 +44,43 @@ void free_trie(Trie *trie) {
   }
   free(trie->children);
   free(trie);
+}
+
+Trie *get_first_non_null_child (Trie *root) {
+  for (size_t i = 0; i < ALPHABET_SIZE; i++) {
+    if (root->children[i] != NULL)
+      return root->children[i];
+  }
+  return NULL;
+}
+
+//todo rewrite this to avoid recurssion
+void free_trie(Trie *trie) {
+  if (trie == NULL)
+    return;
+
+  Trie *current_node = trie;
+  while(true) {
+    Trie *potential_next_node = get_first_non_null_child(current_node);
+
+    if (potential_next_node != NULL) {
+      current_node = potential_next_node;
+      continue;
+    }
+
+    Trie *next_node = current_node->parent;
+    if (next_node == NULL) {
+      free_string(&current_node->forward_number);
+    free(current_node->children);
+    free(current_node);
+      return;}
+
+    next_node->children[number_char_to_int(current_node->number)] = NULL;
+    free_string(&current_node->forward_number);
+    free(current_node->children);
+    free(current_node);
+    current_node = next_node;
+  }
 }
 
 Trie *get_child(Trie *root, const char prefix) {
@@ -61,7 +99,7 @@ bool add_value(Trie *root, String *route, String *value) {
 
     if (next_node == NULL) {
       Trie *potential_next_node;
-      if (!init_trie(&potential_next_node, route->content[i]))
+      if (!init_trie(&potential_next_node, route->content[i], current_node))
         return false;
 
       add_child_to_trie(current_node, potential_next_node);
@@ -97,12 +135,15 @@ void remove_subtree(Trie **root, char const *route_to_subtree) {
     previous_node = current_node;
     current_node = potential_next_node;
   }
-
+  
   if (previous_node != NULL) {
     previous_node->children[number_char_to_int(current_node->number)] = NULL;
+    current_node->parent = NULL;
     free_trie(current_node);
   } else {
     for(size_t i = 0; i < ALPHABET_SIZE; i++) {
+      if (current_node->children[i] != NULL)
+        current_node->children[i]->parent = NULL;
       free_trie(current_node->children[i]);
       current_node->children[i] = NULL;
     }

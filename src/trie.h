@@ -13,9 +13,10 @@ struct Trie {
   char number;
   String forward_number;
   Trie **children;
+  Trie *parent;
 };
 
-bool init_trie(Trie **trie, char prefix);
+bool init_trie(Trie **trie, char prefix, Trie *parent);
 
 void free_trie(Trie *trie);
 
