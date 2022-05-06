@@ -1,8 +1,8 @@
 #include <string.h>
 
+#include "memory_management.h"
 #include "phone_forward.h"
 #include "trie.h"
-#include "memory_management.h"
 
 
 struct PhoneForward {
@@ -16,18 +16,18 @@ struct PhoneNumbers {
 };
 
 PhoneNumbers *init_phone_numbers(size_t size) {
-    PhoneNumbers *result = malloc(sizeof(PhoneNumbers));
-    if (!check_alloc(result))
-      return NULL;
+  PhoneNumbers *result = malloc(sizeof(PhoneNumbers));
+  if (!check_alloc(result))
+    return NULL;
 
-    if (size != 0) {
+  if (size != 0) {
     result->numbers_sequence = malloc(sizeof(String) * size);
 
     if (!check_alloc(result->numbers_sequence)) {
       free(result);
       return NULL;
     }
-      
+
 
     result->size = 0;
     result->allocated_size = size;
@@ -41,11 +41,11 @@ PhoneNumbers *init_phone_numbers(size_t size) {
 
 bool push_back_numbers(PhoneNumbers *numbers, String *number) {
   if (numbers->size == numbers->allocated_size) {
-    String *new_array = realloc(numbers->numbers_sequence, numbers->allocated_size*REALLOC_MULTIPLIER*sizeof(String));
+    String *new_array = realloc(numbers->numbers_sequence, numbers->allocated_size * REALLOC_MULTIPLIER * sizeof(String));
 
     if (!check_alloc(new_array)) {
       return false;
-    } 
+    }
 
     numbers->numbers_sequence = new_array;
     numbers->allocated_size *= REALLOC_MULTIPLIER;
@@ -95,7 +95,7 @@ void phfwdDelete(PhoneForward *pf) {
 bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
   if (pf == NULL || num1 == NULL || num2 == NULL)
     return false;
-    
+
   String num1_string;
   String num2_string;
 
@@ -108,8 +108,7 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
   }
 
 
-  if (!parse_chars_to_string_wrapper(num1, &num1_string) || !parse_chars_to_string_wrapper(num2, &num2_string)
-   || !strcmp(num1, num2) || is_empty_string(&num1_string) || is_empty_string(&num2_string) || !add_value(pf->root, &num1_string, &num2_string)) {
+  if (!parse_chars_to_string_wrapper(num1, &num1_string, NULL) || !parse_chars_to_string_wrapper(num2, &num2_string, NULL) || !strcmp(num1, num2) || is_empty_string(&num1_string) || is_empty_string(&num2_string) || !add_value(pf->root, &num1_string, &num2_string)) {
     free_string(&num1_string);
     free_string(&num2_string);
     return false;
@@ -122,7 +121,7 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
 //todo write function that transfers char* contents to my string wrapper
 //todo validate possible erros
 void phfwdRemove(PhoneForward *pf, char const *num) {
-  if(num != NULL && pf != NULL)
+  if (num != NULL && pf != NULL)
     remove_subtree(&pf->root, num);
 }
 
@@ -132,12 +131,7 @@ char const *phnumGet(PhoneNumbers const *pnum, size_t idx) {
   return pnum->numbers_sequence[idx].content;
 }
 
-//todo add edge case to return empty sequence if num is not correct number
 PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
-  if (pf == NULL) {
-    return NULL;
-  }
-
   PhoneNumbers *result = init_phone_numbers(1);
   if (!check_alloc(result)) {
     return NULL;
@@ -153,16 +147,39 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
     return NULL;
   }
 
-  if (!parse_chars_to_string_wrapper(num, &num_str) || !init_string(&forwarded_number, START_ARRAY_SIZE_SMALL)) {
+  bool memory_failure = false;
+  if (!parse_chars_to_string_wrapper(num, &num_str, &memory_failure)) {
+    if (!memory_failure) {
+      free_string(&num_str);
+      return result;
+    }
+
     phnumDelete(result);
     free_string(&num_str);
     return NULL;
   }
 
-  if (!get_deepest_nonempty_value(pf->root, &num_str, &forwarded_number) || !push_back_numbers(result, &forwarded_number)) {
+  if (is_empty_string(&num_str)) {
+    free_string(&num_str);
+    return result;
+  }
+
+  if (pf == NULL) {
+    free_string(&num_str);
     phnumDelete(result);
+    return NULL;
+  }
+
+  if (!init_string(&forwarded_number, START_ARRAY_SIZE_SMALL)) {
+    free_string(&num_str);
+    phnumDelete(result);
+    return NULL;
+  }
+
+  if (!get_deepest_nonempty_value(pf->root, &num_str, &forwarded_number) || !push_back_numbers(result, &forwarded_number)) {
     free_string(&num_str);
     free_string(&forwarded_number);
+    phnumDelete(result);
     return NULL;
   }
 
@@ -171,4 +188,8 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
 
   return result;
 }
-PhoneNumbers *phfwdReverse(PhoneForward const *pf, char const *num) { pf = pf;num=num;return  NULL;}
+PhoneNumbers *phfwdReverse(PhoneForward const *pf, char const *num) {
+  pf = pf;
+  num = num;
+  return NULL;
+}

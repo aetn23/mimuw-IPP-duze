@@ -84,10 +84,16 @@ int number_char_to_int (const char number) {
   return (int)(number - '0');
 }
 
-bool parse_chars_to_string_wrapper(char const *chars, String *result) {
+bool parse_chars_to_string_wrapper(char const *chars, String *result, bool *memory_failure) {
   for (size_t i = 0; chars[i] != NULL_CHAR; i++) {
-    if (!isdigit(chars[i]) || !insert_str(result, chars[i], result->size))
+    if (!isdigit(chars[i]))
       return false;
+
+    if(!insert_str(result, chars[i], result->size)) {
+      if (memory_failure != NULL)
+        *memory_failure = true;
+      return false;
+    }
   }
 
   return null_terminate(result);

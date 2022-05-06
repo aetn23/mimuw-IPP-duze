@@ -1,7 +1,6 @@
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-#include <ctype.h>
 
 #include "memory_management.h"
 #include "trie.h"
@@ -17,7 +16,7 @@ bool init_trie(Trie **trie, char prefix, Trie *parent) {
     free(*trie);
     return false;
   }
-  
+
   if (!init_string(&(*trie)->forward_number, 0)) {
     free(*trie);
     free((*trie)->children);
@@ -32,21 +31,7 @@ bool init_trie(Trie **trie, char prefix, Trie *parent) {
 
   return true;
 }
-
-//todo rewrite this to avoid recurssion
-void free_trie_old(Trie *trie) {
-  if (trie == NULL)
-    return;
-
-  free_string(&trie->forward_number);
-  for (size_t i = 0; i < ALPHABET_SIZE; i++) {
-    free_trie(trie->children[i]);
-  }
-  free(trie->children);
-  free(trie);
-}
-
-Trie *get_first_non_null_child (Trie *root) {
+Trie *get_first_non_null_child(Trie *root) {
   for (size_t i = 0; i < ALPHABET_SIZE; i++) {
     if (root->children[i] != NULL)
       return root->children[i];
@@ -54,13 +39,12 @@ Trie *get_first_non_null_child (Trie *root) {
   return NULL;
 }
 
-//todo rewrite this to avoid recurssion
 void free_trie(Trie *trie) {
   if (trie == NULL)
     return;
 
   Trie *current_node = trie;
-  while(true) {
+  while (true) {
     Trie *potential_next_node = get_first_non_null_child(current_node);
 
     if (potential_next_node != NULL) {
@@ -71,9 +55,10 @@ void free_trie(Trie *trie) {
     Trie *next_node = current_node->parent;
     if (next_node == NULL) {
       free_string(&current_node->forward_number);
-    free(current_node->children);
-    free(current_node);
-      return;}
+      free(current_node->children);
+      free(current_node);
+      return;
+    }
 
     next_node->children[number_char_to_int(current_node->number)] = NULL;
     free_string(&current_node->forward_number);
@@ -124,7 +109,7 @@ void remove_subtree(Trie **root, char const *route_to_subtree) {
   Trie *previous_node = NULL;
 
   for (size_t i = 0; route_to_subtree[i] != NULL_CHAR; i++) {
-    if(!isdigit(route_to_subtree[i]))
+    if (!isdigit(route_to_subtree[i]))
       return;
 
     Trie *potential_next_node = get_child(current_node, route_to_subtree[i]);
@@ -135,13 +120,13 @@ void remove_subtree(Trie **root, char const *route_to_subtree) {
     previous_node = current_node;
     current_node = potential_next_node;
   }
-  
+
   if (previous_node != NULL) {
     previous_node->children[number_char_to_int(current_node->number)] = NULL;
     current_node->parent = NULL;
     free_trie(current_node);
   } else {
-    for(size_t i = 0; i < ALPHABET_SIZE; i++) {
+    for (size_t i = 0; i < ALPHABET_SIZE; i++) {
       if (current_node->children[i] != NULL)
         current_node->children[i]->parent = NULL;
       free_trie(current_node->children[i]);
@@ -166,7 +151,7 @@ bool get_deepest_nonempty_value(Trie *root, String *route, String *result) {
     if (current_node->forward_number.size != 0) {
       potential_value = &current_node->forward_number;
       potential_value_depth = i + 1;
-   }
+    }
   }
 
   if (potential_value == NULL) {
