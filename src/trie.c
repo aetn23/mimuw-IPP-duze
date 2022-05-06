@@ -5,6 +5,13 @@
 #include "memory_management.h"
 #include "trie.h"
 
+struct Trie {
+  char number;
+  String forward_number;
+  Trie **children;
+  Trie *parent;
+};
+
 //todo inquire possibility of removal of double pointer
 bool init_trie(Trie **trie, char prefix, Trie *parent) {
   *trie = malloc(sizeof(Trie));

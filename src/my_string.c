@@ -1,8 +1,7 @@
 #include <ctype.h>
 
-#include "my_string.h"
 #include "memory_management.h"
-
+#include "my_string.h"
 
 bool init_string(String *str, const size_t size) {
   if (size != 0) {
@@ -24,7 +23,8 @@ bool init_string(String *str, const size_t size) {
 // There is no guarantee that string wil be null terminated after this.
 bool insert_str(String *str, const char to_insert, const size_t location) {
   while (location >= str->allocated_size) {
-    char *tmp = realloc(str->content, sizeof(char) * str->allocated_size * REALLOC_MULTIPLIER);
+    char *tmp = realloc(str->content, sizeof(char) * str->allocated_size *
+                                              REALLOC_MULTIPLIER);
 
     if (!check_alloc(tmp))
       return false;
@@ -51,24 +51,15 @@ void free_string(String *str) {
     free(str->content);
 }
 
-bool transfer_chars_to_string(String *string, char const *chars, const size_t chars_len) {
-  for (size_t i = 0; i < chars_len; i++) {
-    if (!insert_str(string, chars[i], i))
-      return false;
-  }
-  if (!insert_str(string, NULL_CHAR, string->size))
-    return false;
-  string->size--;
-  return true;
-}
-
-bool concatate_from_to(const String *first, const String *second, const size_t from, const size_t to, String *result) {
+bool concatate_from_to(const String *first, const String *second,
+                       const size_t from_second, const size_t to_second,
+                       String *result) {
   for (size_t i = 0; i < first->size; i++) {
     if (!insert_str(result, first->content[i], result->size))
       return false;
   }
 
-  for (size_t i = from; i <= to; i++) {
+  for (size_t i = from_second; i <= to_second; i++) {
     if (!insert_str(result, second->content[i], result->size))
       return false;
   }
@@ -76,20 +67,19 @@ bool concatate_from_to(const String *first, const String *second, const size_t f
   return null_terminate(result);
 }
 
-bool is_empty_string (const String *string) {
-  return !(bool)strcmp(string->content, EMPTY_STRING);
+bool is_empty_string(const String *string) {
+  return !(bool) strcmp(string->content, EMPTY_STRING);
 }
 
-int number_char_to_int (const char number) {
-  return (int)(number - '0');
-}
+int number_char_to_int(const char number) { return (int) (number - '0'); }
 
-bool parse_chars_to_string_wrapper(char const *chars, String *result, bool *memory_failure) {
+bool parse_chars_to_string_wrapper(char const *chars, String *result,
+                                   bool *memory_failure) {
   for (size_t i = 0; chars[i] != NULL_CHAR; i++) {
     if (!isdigit(chars[i]))
       return false;
 
-    if(!insert_str(result, chars[i], result->size)) {
+    if (!insert_str(result, chars[i], result->size)) {
       if (memory_failure != NULL)
         *memory_failure = true;
       return false;

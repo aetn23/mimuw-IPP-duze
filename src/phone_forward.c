@@ -41,7 +41,9 @@ PhoneNumbers *init_phone_numbers(size_t size) {
 
 bool push_back_numbers(PhoneNumbers *numbers, String *number) {
   if (numbers->size == numbers->allocated_size) {
-    String *new_array = realloc(numbers->numbers_sequence, numbers->allocated_size * REALLOC_MULTIPLIER * sizeof(String));
+    String *new_array = realloc(numbers->numbers_sequence,
+                                numbers->allocated_size * REALLOC_MULTIPLIER *
+                                        sizeof(String));
 
     if (!check_alloc(new_array)) {
       return false;
@@ -91,7 +93,7 @@ void phfwdDelete(PhoneForward *pf) {
   free_trie(pf->root);
   free(pf);
 }
-//todo take into account errors
+// todo take into account errors
 bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
   if (pf == NULL || num1 == NULL || num2 == NULL)
     return false;
@@ -108,7 +110,11 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
   }
 
 
-  if (!parse_chars_to_string_wrapper(num1, &num1_string, NULL) || !parse_chars_to_string_wrapper(num2, &num2_string, NULL) || !strcmp(num1, num2) || is_empty_string(&num1_string) || is_empty_string(&num2_string) || !add_value(pf->root, &num1_string, &num2_string)) {
+  if (!parse_chars_to_string_wrapper(num1, &num1_string, NULL) ||
+      !parse_chars_to_string_wrapper(num2, &num2_string, NULL) ||
+      !strcmp(num1, num2) || is_empty_string(&num1_string) ||
+      is_empty_string(&num2_string) ||
+      !add_value(pf->root, &num1_string, &num2_string)) {
     free_string(&num1_string);
     free_string(&num2_string);
     return false;
@@ -118,8 +124,6 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
   return true;
 }
 
-//todo write function that transfers char* contents to my string wrapper
-//todo validate possible erros
 void phfwdRemove(PhoneForward *pf, char const *num) {
   if (num != NULL && pf != NULL)
     remove_subtree(&pf->root, num);
@@ -176,7 +180,8 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
     return NULL;
   }
 
-  if (!get_deepest_nonempty_value(pf->root, &num_str, &forwarded_number) || !push_back_numbers(result, &forwarded_number)) {
+  if (!get_deepest_nonempty_value(pf->root, &num_str, &forwarded_number) ||
+      !push_back_numbers(result, &forwarded_number)) {
     free_string(&num_str);
     free_string(&forwarded_number);
     phnumDelete(result);

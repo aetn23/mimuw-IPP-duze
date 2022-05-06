@@ -22,6 +22,8 @@
 /**
  * Struktura służąca do przechowywania napisów.
  */
+
+// todo transfer this to .c file.
 typedef struct String {
   char *content;
   size_t size;
@@ -33,33 +35,86 @@ typedef struct String {
  * alokuje pamięci na napis. W przeciwnym razie, alokuje pamięć w rozmiarze
  * pozwalającym przechować @p size znaków.
  * @param[in,out] str - wskaźnik na strukturę przechowującą napis;
- * @param [in] size - liczba mówiącą jak dużo pamięci należy alokować.
- * @return Wartość @p true, jeśli alokacja pamięci powiedzie się.
- * Wartość @p false w przeciwnym razie.
+ * @param [in] size - liczba mówiącą jak dużo pamięci należy alokować;
+ * @return Wartość @p true, jeśli alokacja pamięci powiedzie się, bądź nie
+ * będzie jej wcale. Wartość @p false w przeciwnym razie.
  */
 bool init_string(String *str, size_t size);
 
 /** @brief Wstawia znak.
- * Wstawia znak @p to_insert w miejscu @p location. Zwiększone
- * @param str
- * @param to_insert
- * @param location
- * @return
+ * Wstawia znak @p to_insert w miejscu @p location. Zwiększa zaalokowaną pamięć
+ * w razie potrzeby. W wyniku wykonania tej funkcji napis przechowywany w
+ * strukturze wskazywaną przez @p str może nie być zakończony @p '\0'.
+ * @param str [in,out] - wskaźnik na strukturę przechowującą napis;
+ * @param to_insert - znak wstawiany do napisu;
+ * @param location - miejsce, gdzie @p to_insert ma być wstawiony;
+ * @return Wartość @p false jeśli realokacja pamięci nie powiedzie się.
+ * W przeciwnym wypadku @p true.
  */
 bool insert_str(String *str, char to_insert, size_t location);
 
-void clear_str(String *str);
-
+/** @brief Zwalnia strukturę reprezentującą napis.
+ *
+ * @param[in,out] str -wskaźnik na strukturę przechowującą napis;
+ */
 void free_string(String *str);
 
-bool transfer_chars_to_string(String *string, char const *chars, size_t chars_len);
+/** @brief Skleja dwa napisy.
+ * Skleja dwa napisy reprezentowane przez wskaźniki @p first, @p second na
+ * strukturę reprezentująca napisy. Przy sklejaniu, wynik składa się z całości
+ * napisu reprezentowanego przez @p first i od znaków stojących na pozycjach @p
+ * from_second @p to_second włącznie z @p second. Wynik wpisywany jest do @p
+ * result. Funkcja zakłada poprawność przekazanych parametrów. Jeśli wszystkie
+ * operacje powiodą sie, napis reprezentowany przez @p result będzie zakończony
+ * @p '\0'. W przeciwnym razie, @p result nie będzie reprezentować poprawnego
+ * napisu.
+ * @param[in] first - wskaźnik na strukturę reprezentująca pierwszy napis;
+ * @param[in] second - wskaźnik na strukturę reprezentująca drugi napis;
+ * @param[in] from_second - liczba mówiąca od jakiej pozycji należy uwzględniać
+ * znaki z @p second przy sklejaniu;
+ * @param[in] to_second - liczba mówiąca do jakiej pozycji należy uwzględniać
+ * znaki z @p second przy sklejaniu;
+ * @param[in,out] result - wskaźnik na strukturę przechowującą wynik funkcji;
+ * @return Wartość @p true, jeśli napisy zostały sklejone. Wartość @p false,
+ * jeśli nie udało się zaalokować pamięci.
+ */
 
-bool concatate_from_to(const String *first, const String *second, size_t from, size_t to, String *result);
-
+bool concatate_from_to(const String *first, const String *second,
+                       size_t from_second, size_t to_second, String *result);
+/** @brief Sprawdza czy struktura reprezentuje pusty napis.
+ * Sprawdza czy struktura reprezentuje pusty napis. Funkcja zakłada poprawność
+ * przekazanych argumentów.
+ * @param[in] string - wskaźnik na strukturę przechowującą napis;
+ * @return Wartość @p true jeśli napis reprezentowany jest pusty. Wartość @p
+ * false w przeciwnym wypadku.
+ */
 bool is_empty_string(const String *string);
 
+/** @brief Zwraca liczbę będącą wartością @p number w tablic ASCII.
+ * Zwraca liczbę będącą wartością @p number w tablic ASCII. Funkcja zakłada
+ * poprawność przekazanych argumentów, to jest, że @p number jest znakiem z
+ * przedziału '0' do '9' włącznie.
+ * @param[in] number - znak z przedziału '0' do '9' włącznie;
+ * @return Wartość odpowiadająca znaku @p number w tablicy ASCII.
+ */
 int number_char_to_int(char number);
 
-bool parse_chars_to_string_wrapper(char const *chars, String *result, bool *memory_failure);
+/** @brief Parsuje znaki reprezentujące numer.
+ * Parsuje znaki reprezentujące numer. Kopiuje znaki z @p chars do struktury @p
+ * result. W razie potrzeby realokuje pamięć dla napisu w @p result. Ustawia @p
+ * memory_failure na wartość @p true, gdy alokacja pamięci nie powiedzie się.
+ * Funkcja zakłada poprawność parameter @result oraz @p memory_failure. Funkcja
+ * zakłada, że @p char jest różne od @p NULL. W razie błędu, @p result nie
+ * będzie reprezentować żadnego poprawnego napisu. W przeciwnym razie @p result
+ * reprezentuje poprawny napis.
+ * @param[in] chars - wskaźnik na ciąg znaków;
+ * @param[in,out] result - wskaźnik na strukturę reprezentującą napis;
+ * @param memory_failure - wskaźnik na wartość logiczną przechowującą informację
+ * o wystąpieniu błędu alokacji;
+ * @return Wartość @p false jeśli @p chars nie reprezentuje numeru lub gdy
+ * alokacja pamięci nie powiedzie się. Wartość @p true w przeciwnym razie.
+ */
+bool parse_chars_to_string_wrapper(char const *chars, String *result,
+                                   bool *memory_failure);
 
 #endif//_MY_STRING_
