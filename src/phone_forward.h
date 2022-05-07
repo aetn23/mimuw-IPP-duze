@@ -17,8 +17,8 @@
 /**
  * To jest deklaracja struktury przechowującej przekierowania numerów telefonów.
  */
-
 struct PhoneForward;
+
 /**
  * Typ reprezentujący przekierowania numerów telefonu.
  */

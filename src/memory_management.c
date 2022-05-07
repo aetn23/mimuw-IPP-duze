@@ -2,7 +2,7 @@
  * Implementacja funkcji do zarządzania pamięcią.
  *
  * @author Mikołaj Piróg <mp429583@students.mimuw.edu.pl
- * @copyright Uniwersytet Warszawski
+ * @copyright Mikołaj Piróg
  * @date 2022
  */
 
@@ -11,5 +11,6 @@
 bool check_alloc(void *pointer) {
   if (pointer == NULL)
     return false;
+
   return true;
 }

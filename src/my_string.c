@@ -2,7 +2,7 @@
  * Implementacja modułu do przechowywania i operowania na napisach.
  *
  * @author Mikołaj Piróg <mp429583@students.mimuw.edu.pl
- * @copyright Uniwersytet Warszawski
+ * @copyright Mikołaj Piróg
  * @date 2022
  */
 
@@ -25,6 +25,7 @@ bool init_string(String *str, const size_t size) {
     str->size = 0;
     str->allocated_size = 0;
   }
+
   return true;
 }
 
@@ -42,6 +43,7 @@ bool insert_str(String *str, const char to_insert, const size_t location) {
 
   str->content[location] = to_insert;
   str->size++;
+
   return true;
 }
 
@@ -59,6 +61,7 @@ bool null_terminate(String *str) {
     return false;
 
   str->size--;
+
   return true;
 }
 
@@ -67,9 +70,9 @@ void free_string(String *str) {
     free(str->content);
 }
 
-bool concatate_from_to(const String *first, const String *second,
-                       const size_t from_second, const size_t to_second,
-                       String *result) {
+bool concatenate_from_to(const String *first, const String *second,
+                         const size_t from_second, const size_t to_second,
+                         String *result) {
   for (size_t i = 0; i < first->size; i++) {
     if (!insert_str(result, first->content[i], result->size))
       return false;
@@ -98,6 +101,7 @@ bool parse_chars_to_string_wrapper(char const *chars, String *result,
     if (!insert_str(result, chars[i], result->size)) {
       if (memory_failure != NULL)
         *memory_failure = true;
+
       return false;
     }
   }

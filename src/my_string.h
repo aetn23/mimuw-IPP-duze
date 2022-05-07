@@ -2,7 +2,7 @@
  * Interfejs modułu służącego do przechowywania i operowania na napisach.
  *
  * @author Mikołaj Piróg <mp429583@students.mimuw.edu.pl
- * @copyright Uniwerstyet Warszawski
+ * @copyright Mikołaj Piróg
  * @date 2022
  */
 
@@ -86,9 +86,8 @@ void free_string(String *str);
  * @return Wartość @p true, jeśli napisy zostały sklejone. Wartość @p false,
  * jeśli nie udało się zaalokować pamięci.
  */
-
-bool concatate_from_to(const String *first, const String *second,
-                       size_t from_second, size_t to_second, String *result);
+bool concatenate_from_to(const String *first, const String *second,
+                         size_t from_second, size_t to_second, String *result);
 /** @brief Sprawdza czy struktura reprezentuje pusty napis.
  * Sprawdza czy struktura reprezentuje pusty napis. Funkcja zakłada poprawność
  * przekazanych argumentów.

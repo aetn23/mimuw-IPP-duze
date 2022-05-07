@@ -1,3 +1,10 @@
+/** @file
+ * Implementacja modułu drzew Trie.
+ * @author Mikołaj Piróg
+ * @copyright Mikołaj Piróg
+ * @date 2022
+ */
+
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,10 +16,10 @@
  * Struktura implementująca drzewa Trie.
  */
 struct Trie {
-  char number; /**< Prefiks przechowywany w węźle. */
+  char number;           /**< Prefiks przechowywany w węźle. */
   String forward_number; /**< Przekierowywał numer telefony. */
-  Trie **children; /**< Tablica wskaźników dzieci węzła. */
-  Trie *parent; /**< Wskaźnik na rodzica węzła. */
+  Trie **children;       /**< Tablica wskaźników dzieci węzła. */
+  Trie *parent;          /**< Wskaźnik na rodzica węzła. */
 };
 
 bool init_trie(Trie **trie, const char prefix, Trie *parent) {
@@ -23,12 +30,14 @@ bool init_trie(Trie **trie, const char prefix, Trie *parent) {
   (*trie)->children = calloc(ALPHABET_SIZE, sizeof(Trie *));
   if (!check_alloc((*trie)->children)) {
     free(*trie);
+
     return false;
   }
 
   if (!init_string(&(*trie)->forward_number, 0)) {
     free(*trie);
     free((*trie)->children);
+
     return false;
   }
 
@@ -37,6 +46,7 @@ bool init_trie(Trie **trie, const char prefix, Trie *parent) {
 
   return true;
 }
+
 /** @brief Zwraca pierwsze dziecko, nie będące @p NULL.
  * Zwraca pierwsze dziecko, nie będące @p NULL. Jeśli takiego nie ma, zwraca
  * NULL. Zakłada poprawność parametrów.
@@ -49,6 +59,7 @@ Trie *get_first_non_null_child(const Trie *node) {
     if (node->children[i] != NULL)
       return node->children[i];
   }
+
   return NULL;
 }
 
@@ -70,6 +81,7 @@ void free_trie(Trie *trie) {
       free_string(&current_node->forward_number);
       free(current_node->children);
       free(current_node);
+
       return;
     }
 
@@ -140,6 +152,7 @@ void remove_subtree(Trie **root, char const *route_to_subtree) {
     if (potential_next_node == NULL) {
       return;
     }
+
     previous_node = current_node;
     current_node = potential_next_node;
   }
@@ -152,6 +165,7 @@ void remove_subtree(Trie **root, char const *route_to_subtree) {
     for (size_t i = 0; i < ALPHABET_SIZE; i++) {
       if (current_node->children[i] != NULL)
         current_node->children[i]->parent = NULL;
+
       free_trie(current_node->children[i]);
       current_node->children[i] = NULL;
     }
@@ -177,13 +191,15 @@ bool get_num_forward_from_trie(Trie *root, const String *num, String *result) {
   }
 
   if (potential_value == NULL) {
-    if (!concatate_from_to(result, num, 0, num->size - 1, result))
+    if (!concatenate_from_to(result, num, 0, num->size - 1, result))
       return false;
+
     return true;
   }
 
-  if (!concatate_from_to(potential_value, num, potential_value_depth,
-                         num->size - 1, result))
+  if (!concatenate_from_to(potential_value, num, potential_value_depth,
+                           num->size - 1, result))
     return false;
+
   return true;
 }

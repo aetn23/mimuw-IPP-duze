@@ -2,12 +2,12 @@
  * Interfejs makr i funkcji związanych z zarządzaniem pamięcią.
  *
  * @author Mikołaj Piróg <mp429583@students.mimuw.edu.pl
- * @copyright Uniwersytet Warszawski
+ * @copyright Mikołaj Piróg
  * @date 2022
  */
 
-#ifndef _MEMORY_MANAGMENT_
-#define _MEMORY_MANAGMENT_
+#ifndef _MEMORY_MANAGEMENT_
+#define _MEMORY_MANAGEMENT_
 
 #include <stdbool.h>
 #include <stdlib.h>
@@ -15,7 +15,7 @@
 /**
  * Makro oznaczające początkową wielkość tablic.
  */
-#define START_ARRAY_SIZE_SMALL 1
+#define START_ARRAY_SIZE_SMALL 16
 /**
  * Marko oznaczające stałą powiększania tablicy.
  */
@@ -30,4 +30,4 @@
  */
 bool check_alloc(void *pointer);
 
-#endif//_MEMORY_MANAGMENT_
+#endif//_MEMORY_MANAGEMENT_

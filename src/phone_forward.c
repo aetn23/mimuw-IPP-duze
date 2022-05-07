@@ -2,7 +2,7 @@
  * Implementacja modułu obsługującego przekierowania numerów telefonicznych
  *
  * @author Mikołaj Piróg <mpr429583@students.mimuw.edu.pl>
- * @copyright Uniwersytet Warszawski
+ * @copyright Mikołaj Piróg
  * @date 2022
  */
 #include <string.h>
@@ -46,9 +46,9 @@ PhoneNumbers *phone_numbers_new(const size_t size) {
 
     if (!check_alloc(result->numbers_sequence)) {
       free(result);
+
       return NULL;
     }
-
 
     result->size = 0;
     result->allocated_size = size;
@@ -57,6 +57,7 @@ PhoneNumbers *phone_numbers_new(const size_t size) {
     result->size = 0;
     result->allocated_size = 0;
   }
+
   return result;
 }
 
@@ -75,9 +76,8 @@ bool push_back_numbers(PhoneNumbers *numbers, const String *number) {
                                 numbers->allocated_size * REALLOC_MULTIPLIER *
                                         sizeof(String));
 
-    if (!check_alloc(new_array)) {
+    if (!check_alloc(new_array))
       return false;
-    }
 
     numbers->numbers_sequence = new_array;
     numbers->allocated_size *= REALLOC_MULTIPLIER;
@@ -109,10 +109,12 @@ PhoneForward *phfwdNew() {
   Trie *trie;
   if (!init_trie(&trie, NULL_CHAR, NULL)) {
     free(result);
+
     return NULL;
   }
 
   result->root = trie;
+
   return result;
 }
 
@@ -136,9 +138,9 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
 
   if (!init_string(&num2_string, START_ARRAY_SIZE_SMALL)) {
     free_string(&num1_string);
+
     return false;
   }
-
 
   if (!parse_chars_to_string_wrapper(num1, &num1_string, NULL) ||
       !parse_chars_to_string_wrapper(num2, &num2_string, NULL) ||
@@ -147,10 +149,12 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
       !add_value(pf->root, &num1_string, &num2_string)) {
     free_string(&num1_string);
     free_string(&num2_string);
+
     return false;
   }
 
   free_string(&num1_string);
+
   return true;
 }
 
@@ -162,6 +166,7 @@ void phfwdRemove(PhoneForward *pf, char const *num) {
 char const *phnumGet(PhoneNumbers const *pnum, size_t idx) {
   if (pnum == NULL || idx >= pnum->size)
     return NULL;
+
   return pnum->numbers_sequence[idx].content;
 }
 
@@ -172,16 +177,16 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
   String num_str;
   String forwarded_number;
   PhoneNumbers *result = phone_numbers_new(1);
-  if (!check_alloc(result)) {
+
+  if (!check_alloc(result))
     return NULL;
-  }
 
   if (num == NULL)
     return result;
 
-
   if (!init_string(&num_str, START_ARRAY_SIZE_SMALL)) {
     phnumDelete(result);
+
     return NULL;
   }
 
@@ -189,23 +194,26 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
   if (!parse_chars_to_string_wrapper(num, &num_str, &memory_failure)) {
     if (!memory_failure) {
       free_string(&num_str);
+
       return result;
     }
 
     phnumDelete(result);
     free_string(&num_str);
+
     return NULL;
   }
 
   if (is_empty_string(&num_str)) {
     free_string(&num_str);
+
     return result;
   }
-
 
   if (!init_string(&forwarded_number, START_ARRAY_SIZE_SMALL)) {
     free_string(&num_str);
     phnumDelete(result);
+
     return NULL;
   }
 
@@ -214,9 +222,9 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
     free_string(&num_str);
     free_string(&forwarded_number);
     phnumDelete(result);
+
     return NULL;
   }
-
 
   free_string(&num_str);
 

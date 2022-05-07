@@ -1,7 +1,7 @@
 /** @file
  * Interfejs modułu drzew Trie.
  * @author Mikołaj Piróg
- * @copyright Uniwersytet Warszawski
+ * @copyright Mikołaj Piróg
  * @date 2022
  */
 
