@@ -58,7 +58,7 @@ bool add_value(Trie *root, String *route, String *value);
  * NULL. Jeśli @p route_to_subtree nie jest poprawnym numerem lub nie wskazuje
  * na istniejące poddrzewo, funkcja nic nie robi. Funkcja nie może się nie udać.
  * @param[in,out] root - wskaźnik na wskaźnik na korzeń drzewa Trie;
- * @param[in] route_to_subtree - wskaźnik na ciąg stanowiący potencjalną drogę
+ * @param[in] route_to_subtree - wskaźnik na ciąg stanowiący potencjalną drogę;
  * do usuwanego poddrzewa.
  */
 void remove_subtree(Trie **root, char const *route_to_subtree);

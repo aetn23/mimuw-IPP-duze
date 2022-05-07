@@ -52,7 +52,7 @@ bool insert_str(String *str, const char to_insert, const size_t location) {
  * razie potrzeby alokuje pamięć. Zakłada poprawność argumentów.
  * @param[in,out] str - wskaźnik na strukturę przechowującą napis;
  * @return Wartość @p true, jeśli operacja powiedzie się. Wartość @p false,
- * jeśłi nie uda się zaalokować pamięci.
+ * jeśli nie uda się zaalokować pamięci.
  */
 bool null_terminate(String *str) {
   if (!insert_str(str, NULL_CHAR, str->size))

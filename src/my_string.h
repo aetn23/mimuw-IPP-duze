@@ -14,16 +14,17 @@
 #include <string.h>
 
 /**
- * Makra reprezentujące szczególne znaki bądź napisy.
+ * Makro reprezentujące znak zerowy.
  */
 #define NULL_CHAR '\0'
+/**
+ * Marko reprezentujące pusty napis.
+ */
 #define EMPTY_STRING ""
 
 /**
  * Struktura służąca do przechowywania napisów.
  */
-
-// todo transfer this to .c file.
 typedef struct String {
   char *content;
   size_t size;
@@ -45,9 +46,9 @@ bool init_string(String *str, size_t size);
  * Wstawia znak @p to_insert w miejscu @p location. Zwiększa zaalokowaną pamięć
  * w razie potrzeby. W wyniku wykonania tej funkcji napis przechowywany w
  * strukturze wskazywaną przez @p str może nie być zakończony @p '\0'.
- * @param str [in,out] - wskaźnik na strukturę przechowującą napis;
- * @param to_insert - znak wstawiany do napisu;
- * @param location - miejsce, gdzie @p to_insert ma być wstawiony;
+ * @param[in,out] str - wskaźnik na strukturę przechowującą napis;
+ * @param[in] to_insert - znak wstawiany do napisu;
+ * @param[in] location - miejsce, gdzie @p to_insert ma być wstawiony;
  * @return Wartość @p false jeśli realokacja pamięci nie powiedzie się.
  * W przeciwnym wypadku @p true.
  */
@@ -55,7 +56,7 @@ bool insert_str(String *str, char to_insert, size_t location);
 
 /** @brief Zwalnia strukturę reprezentującą napis.
  * Zwalnia strukturę reprezentującą napis. Ta operacja nie może się nie udać.
- * @param[in,out] str -wskaźnik na strukturę przechowującą napis;
+ * @param[in,out] str - wskaźnik na strukturę przechowującą napis;
  */
 void free_string(String *str);
 

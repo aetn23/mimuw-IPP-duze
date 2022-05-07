@@ -40,10 +40,17 @@ bool init_trie(Trie **trie, char prefix, Trie *parent) {
 
   return true;
 }
-Trie *get_first_non_null_child(Trie *root) {
+/** @brief Zwraca pierwsze dziecko, nie będące @p NULL.
+ * Zwraca pierwsze dziecko, nie będące @p NULL. Jeśli takiego nie ma, zwraca
+ * NULL. Zakłada poprawność parametrów.
+ * @param[in] node - Wskaźnik na węzeł Trie;
+ * @return Wskaźnik na pierwsze dziecko nie będące @p NULL, lub @p NULL, jeśli
+ * takie nie istnieje.
+ */
+Trie *get_first_non_null_child(Trie *node) {
   for (size_t i = 0; i < ALPHABET_SIZE; i++) {
-    if (root->children[i] != NULL)
-      return root->children[i];
+    if (node->children[i] != NULL)
+      return node->children[i];
   }
   return NULL;
 }
@@ -77,12 +84,24 @@ void free_trie(Trie *trie) {
   }
 }
 
-Trie *get_child(Trie *root, const char prefix) {
-  return root->children[number_char_to_int(prefix)];
+/** @brief Zwraca wskaźnik na dziecko o zadanym numerze.
+ * Zwraca wskaźnik na dziecko o zadanym numerze.
+ * @param[in] root - wskaźnik na węzeł Trie;
+ * @param[in] number - znak szukanego dziecka;
+ * @return Wskaźnik na dziecko o znaku równym @p number.
+ */
+Trie *get_child(Trie *root, const char number) {
+  return root->children[number_char_to_int(number)];
 }
 
-void add_child_to_trie(Trie *root, Trie *child) {
-  root->children[number_char_to_int(child->number)] = child;
+/** @brief Dodaje dziecko do tablicy dzieci węzła.
+ * Dodaje dziecko do tablicy dzieci węzła. Węzeł @p node przejmuje @p child na
+ * własność.
+ * @param[in] node - wskaźnik na węzeł będący rodzicem;
+ * @param[in] child - wskaźnik na węzeł będący dzieckiem;
+ */
+void add_child_to_trie(Trie *node, Trie *child) {
+  node->children[number_char_to_int(child->number)] = child;
 }
 
 bool add_value(Trie *root, String *route, String *value) {
@@ -111,7 +130,6 @@ bool add_value(Trie *root, String *route, String *value) {
   return true;
 }
 
-// Think if this can be done more nicely
 void remove_subtree(Trie **root, char const *route_to_subtree) {
   Trie *current_node = *root;
   Trie *previous_node = NULL;

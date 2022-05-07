@@ -13,10 +13,12 @@
 #include <stdlib.h>
 
 /**
- * Makra wykorzystywane przy alokacji pamięci
+ * Makro oznaczające początkową wielkość tablic.
  */
 #define START_ARRAY_SIZE_SMALL 1
-#define START_ARRAY_SIZE_BIG 1
+/**
+ * Marko oznaczające stałą powiększania tablicy.
+ */
 #define REALLOC_MULTIPLIER 2
 
 /** @brief Sprawdza, czy alokacja pamięci się powiodła.
