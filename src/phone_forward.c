@@ -180,7 +180,7 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
     return NULL;
   }
 
-  if (!get_deepest_nonempty_value(pf->root, &num_str, &forwarded_number) ||
+  if (!get_num_forward_from_trie(pf->root, &num_str, &forwarded_number) ||
       !push_back_numbers(result, &forwarded_number)) {
     free_string(&num_str);
     free_string(&forwarded_number);

@@ -12,7 +12,7 @@ struct Trie {
   Trie *parent;
 };
 
-//todo inquire possibility of removal of double pointer
+// todo inquire possibility of removal of double pointer
 bool init_trie(Trie **trie, char prefix, Trie *parent) {
   *trie = malloc(sizeof(Trie));
   if (!check_alloc(*trie))
@@ -83,7 +83,6 @@ void add_child_to_trie(Trie *root, Trie *child) {
   root->children[number_char_to_int(child->number)] = child;
 }
 
-//todo error checking
 bool add_value(Trie *root, String *route, String *value) {
   Trie *current_node = root;
   for (size_t i = 0; i < route->size; i++) {
@@ -110,7 +109,7 @@ bool add_value(Trie *root, String *route, String *value) {
   return true;
 }
 
-//Think if this can be done more nicely
+// Think if this can be done more nicely
 void remove_subtree(Trie **root, char const *route_to_subtree) {
   Trie *current_node = *root;
   Trie *previous_node = NULL;
@@ -142,14 +141,13 @@ void remove_subtree(Trie **root, char const *route_to_subtree) {
   }
 }
 
-//todo rename
-bool get_deepest_nonempty_value(Trie *root, String *route, String *result) {
+bool get_num_forward_from_trie(Trie *root, String *num, String *result) {
   String *potential_value = NULL;
   size_t potential_value_depth = 0;
   Trie *current_node = root;
 
-  for (size_t i = 0; i < route->size; i++) {
-    current_node = get_child(current_node, route->content[i]);
+  for (size_t i = 0; i < num->size; i++) {
+    current_node = get_child(current_node, num->content[i]);
 
     if (current_node == NULL) {
       break;
@@ -162,12 +160,13 @@ bool get_deepest_nonempty_value(Trie *root, String *route, String *result) {
   }
 
   if (potential_value == NULL) {
-    if (!concatate_from_to(result, route, 0, route->size - 1, result))
+    if (!concatate_from_to(result, num, 0, num->size - 1, result))
       return false;
     return true;
   }
 
-  if (!concatate_from_to(potential_value, route, potential_value_depth, route->size - 1, result))
+  if (!concatate_from_to(potential_value, num, potential_value_depth,
+                         num->size - 1, result))
     return false;
   return true;
 }

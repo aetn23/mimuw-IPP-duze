@@ -54,7 +54,7 @@ bool init_string(String *str, size_t size);
 bool insert_str(String *str, char to_insert, size_t location);
 
 /** @brief Zwalnia strukturę reprezentującą napis.
- *
+ * Zwalnia strukturę reprezentującą napis. Ta operacja nie może się nie udać.
  * @param[in,out] str -wskaźnik na strukturę przechowującą napis;
  */
 void free_string(String *str);
@@ -103,14 +103,15 @@ int number_char_to_int(char number);
  * Parsuje znaki reprezentujące numer. Kopiuje znaki z @p chars do struktury @p
  * result. W razie potrzeby realokuje pamięć dla napisu w @p result. Ustawia @p
  * memory_failure na wartość @p true, gdy alokacja pamięci nie powiedzie się.
- * Funkcja zakłada poprawność parameter @result oraz @p memory_failure. Funkcja
- * zakłada, że @p char jest różne od @p NULL. W razie błędu, @p result nie
- * będzie reprezentować żadnego poprawnego napisu. W przeciwnym razie @p result
- * reprezentuje poprawny napis.
+ * Funkcja zakłada poprawność parametru @p result oraz @p memory_failure.
+ * Funkcja zakłada, że @p chars jest różne od @p NULL. W razie błędu, @p result
+ * nie będzie reprezentować żadnego poprawnego napisu. W przeciwnym razie @p
+ * result reprezentuje poprawny napis. Błąd może być nie powiedzeniem się
+ * alokacji pamięci albo niereprezentowaniem numeru przez @p chars.
  * @param[in] chars - wskaźnik na ciąg znaków;
  * @param[in,out] result - wskaźnik na strukturę reprezentującą napis;
- * @param memory_failure - wskaźnik na wartość logiczną przechowującą informację
- * o wystąpieniu błędu alokacji;
+ * @param[in,out] memory_failure - wskaźnik na wartość logiczną przechowującą
+ * informację o wystąpieniu błędu alokacji;
  * @return Wartość @p false jeśli @p chars nie reprezentuje numeru lub gdy
  * alokacja pamięci nie powiedzie się. Wartość @p true w przeciwnym razie.
  */

@@ -20,7 +20,6 @@ bool init_string(String *str, const size_t size) {
   return true;
 }
 
-// There is no guarantee that string wil be null terminated after this.
 bool insert_str(String *str, const char to_insert, const size_t location) {
   while (location >= str->allocated_size) {
     char *tmp = realloc(str->content, sizeof(char) * str->allocated_size *
