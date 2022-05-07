@@ -1,3 +1,11 @@
+/** @file
+ * Implementacja modułu do przechowywania i operowania na napisach.
+ *
+ * @author Mikołaj Piróg <mp429583@students.mimuw.edu.pl
+ * @copyright Uniwersytet Warszawski
+ * @date 2022
+ */
+
 #include <ctype.h>
 
 #include "memory_management.h"
@@ -37,6 +45,15 @@ bool insert_str(String *str, const char to_insert, const size_t location) {
   return true;
 }
 
+/** @brief Zakańcza napis przechowywany przez strukturę @p String znakiem @p
+ * '\0'.
+ *  Zakańcza napis przechowywany przez strukturę @p String znakiem @p
+ * '\0'. Długość napisu nie zmienia się, zachowując konwencję obecną w C. W
+ * razie potrzeby alokuje pamięć. Zakłada poprawność argumentów.
+ * @param[in,out] str - wskaźnik na strukturę przechowującą napis;
+ * @return Wartość @p true, jeśli operacja powiedzie się. Wartość @p false,
+ * jeśłi nie uda się zaalokować pamięci.
+ */
 bool null_terminate(String *str) {
   if (!insert_str(str, NULL_CHAR, str->size))
     return false;

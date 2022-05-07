@@ -5,6 +5,9 @@
 #include "memory_management.h"
 #include "trie.h"
 
+/**
+ * Struktura implementująca drzewa Trie.
+ */
 struct Trie {
   char number;
   String forward_number;
@@ -12,7 +15,6 @@ struct Trie {
   Trie *parent;
 };
 
-// todo inquire possibility of removal of double pointer
 bool init_trie(Trie **trie, char prefix, Trie *parent) {
   *trie = malloc(sizeof(Trie));
   if (!check_alloc(*trie))

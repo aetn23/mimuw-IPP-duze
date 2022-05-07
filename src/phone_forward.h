@@ -1,5 +1,5 @@
 /** @file
- * Interfejs klasy przechowującej przekierowania numerów telefonicznych
+ * Interfejs modułu obsługującego przekierowania numerów telefonicznych
  *
  * @author Marcin Peczarski <marpe@mimuw.edu.pl>
  * @copyright Uniwersytet Warszawski
@@ -14,13 +14,13 @@
 
 
 /**
- * To jest struktura przechowująca przekierowania numerów telefonów.
+ * To jest deklaracja struktury przechowującej przekierowania numerów telefonów.
  */
 struct PhoneForward;
 typedef struct PhoneForward PhoneForward;
 
 /**
- * To jest struktura przechowująca ciąg numerów telefonów.
+ * To jest deklaracja struktury przechowującej ciąg numerów telefonów.
  */
 struct PhoneNumbers;
 typedef struct PhoneNumbers PhoneNumbers;

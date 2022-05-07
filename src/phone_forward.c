@@ -1,21 +1,40 @@
+/** @file
+ * Implementacja modułu obsługującego przekierowania numerów telefonicznych
+ *
+ * @author Mikołaj Piróg <mpr429583@students.mimuw.edu.pl>
+ * @copyright Uniwersytet Warszawski
+ * @date 2022
+ */
 #include <string.h>
 
 #include "memory_management.h"
 #include "phone_forward.h"
 #include "trie.h"
 
-
+/**
+ * Implementacja struktury przechowującej przekierowania numerów telefonów.
+ */
 struct PhoneForward {
   Trie *root;
 };
 
+/**
+ * Implementacja struktury przechowującej numery telefonów.
+ */
 struct PhoneNumbers {
   String *numbers_sequence;
   size_t size;
   size_t allocated_size;
 };
 
-PhoneNumbers *init_phone_numbers(size_t size) {
+/** @brief Tworzy nową strukturę.
+ * Tworzy nową strukturę przechowującą numery telefonu. Alokuje pamięć na @p
+ * size numerów telefonu. Jeśli @p size ma wartość zero, nie alokuje pamięci.
+ * @param[in] size - liczba numerów telefonów, na jaką struktura ma mieć pamięć;
+ * @return Wskaźnik na utworzoną strukturę, lub @p NULL gdy nie udało się
+ * zaalokować pamięci.
+ */
+PhoneNumbers *phone_numbers_new(size_t size) {
   PhoneNumbers *result = malloc(sizeof(PhoneNumbers));
   if (!check_alloc(result))
     return NULL;
@@ -39,6 +58,15 @@ PhoneNumbers *init_phone_numbers(size_t size) {
   return result;
 }
 
+/** @brief Wstawia numer telefonu do struktury.
+ * Wstawia numer telefonu do struktury. Alokuje pamięć, jeśli zachodzi taka
+ * potrzeba. Funkcja zakłada poprawność parametrów. Po nieudanej alokacji
+ * struktura pod wskaźnikiem @p numbers nadal jest poprawna.
+ * @param[in,out] numbers - wskaźnik na strukturę przechowującą numery telefonu;
+ * @param[in] number - numer telefonu;
+ * @return Wartość @p true, jeśli operacje powiodą się. Wartość @p false, jeśli
+ * ewentualna alokacja pamięci nie powiedzie się.
+ */
 bool push_back_numbers(PhoneNumbers *numbers, String *number) {
   if (numbers->size == numbers->allocated_size) {
     String *new_array = realloc(numbers->numbers_sequence,
@@ -93,7 +121,7 @@ void phfwdDelete(PhoneForward *pf) {
   free_trie(pf->root);
   free(pf);
 }
-// todo take into account errors
+
 bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
   if (pf == NULL || num1 == NULL || num2 == NULL)
     return false;
@@ -136,7 +164,12 @@ char const *phnumGet(PhoneNumbers const *pnum, size_t idx) {
 }
 
 PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
-  PhoneNumbers *result = init_phone_numbers(1);
+  if (pf == NULL)
+    return NULL;
+
+  String num_str;
+  String forwarded_number;
+  PhoneNumbers *result = phone_numbers_new(1);
   if (!check_alloc(result)) {
     return NULL;
   }
@@ -144,8 +177,7 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
   if (num == NULL)
     return result;
 
-  String num_str;
-  String forwarded_number;
+
   if (!init_string(&num_str, START_ARRAY_SIZE_SMALL)) {
     phnumDelete(result);
     return NULL;
@@ -168,11 +200,6 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
     return result;
   }
 
-  if (pf == NULL) {
-    free_string(&num_str);
-    phnumDelete(result);
-    return NULL;
-  }
 
   if (!init_string(&forwarded_number, START_ARRAY_SIZE_SMALL)) {
     free_string(&num_str);
@@ -193,8 +220,9 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
 
   return result;
 }
+
 PhoneNumbers *phfwdReverse(PhoneForward const *pf, char const *num) {
-  pf = pf;
-  num = num;
+  (void) pf;
+  (void) num;
   return NULL;
 }

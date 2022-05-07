@@ -1,5 +1,5 @@
 /** @file
- * Interfejs struktury służącej do przechowywania i operowania na napisach.
+ * Interfejs modułu służącego do przechowywania i operowania na napisach.
  *
  * @author Mikołaj Piróg <mp429583@students.mimuw.edu.pl
  * @copyright Uniwerstyet Warszawski
@@ -103,11 +103,12 @@ int number_char_to_int(char number);
  * Parsuje znaki reprezentujące numer. Kopiuje znaki z @p chars do struktury @p
  * result. W razie potrzeby realokuje pamięć dla napisu w @p result. Ustawia @p
  * memory_failure na wartość @p true, gdy alokacja pamięci nie powiedzie się.
- * Funkcja zakłada poprawność parametru @p result oraz @p memory_failure.
- * Funkcja zakłada, że @p chars jest różne od @p NULL. W razie błędu, @p result
- * nie będzie reprezentować żadnego poprawnego napisu. W przeciwnym razie @p
- * result reprezentuje poprawny napis. Błąd może być nie powiedzeniem się
- * alokacji pamięci albo niereprezentowaniem numeru przez @p chars.
+ * Funkcja zakłada poprawność parametru @p result. Wartość @p memory_failure
+ * może wynosić @p NULL. Funkcja zakłada, że @p chars jest różne od @p NULL. W
+ * razie błędu, @p result nie będzie reprezentować żadnego poprawnego napisu. W
+ * przeciwnym razie @p result reprezentuje poprawny napis. Błąd może być nie
+ * powiedzeniem się alokacji pamięci albo niereprezentowaniem numeru przez @p
+ * chars.
  * @param[in] chars - wskaźnik na ciąg znaków;
  * @param[in,out] result - wskaźnik na strukturę reprezentującą napis;
  * @param[in,out] memory_failure - wskaźnik na wartość logiczną przechowującą
