@@ -9,10 +9,10 @@
  * Struktura implementująca drzewa Trie.
  */
 struct Trie {
-  char number;
-  String forward_number;
-  Trie **children;
-  Trie *parent;
+  char number; /**< Prefiks przechowywany w węźle. */
+  String forward_number; /**< Przekierowywał numer telefony. */
+  Trie **children; /**< Tablica wskaźników dzieci węzła. */
+  Trie *parent; /**< Wskaźnik na rodzica węzła. */
 };
 
 bool init_trie(Trie **trie, char prefix, Trie *parent) {

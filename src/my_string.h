@@ -26,9 +26,10 @@
  * Struktura służąca do przechowywania napisów.
  */
 typedef struct String {
-  char *content;
-  size_t size;
-  size_t allocated_size;
+  char *content; /**< Tablica znaków. */
+  size_t size;   /**< Liczba przechowywanych znaków, nie licząc znaku '\0'. */
+  size_t allocated_size; /**< Liczba elementów, na jakie @p content ma miejsc w
+                            pamięci. */
 } String;
 
 /** @brief Inicjuje strukturę.

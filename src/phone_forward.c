@@ -12,19 +12,21 @@
 #include "trie.h"
 
 /**
- * Implementacja struktury przechowującej przekierowania numerów telefonów.
+ * Implementacja Struktury służącej do przechowywania przekierowań.
+ * numerów telefonów.
  */
 struct PhoneForward {
-  Trie *root;
+  Trie *root; /**< Wskaźnik na korzeń drzewa Trie. */
 };
 
 /**
  * Implementacja struktury przechowującej numery telefonów.
  */
 struct PhoneNumbers {
-  String *numbers_sequence;
-  size_t size;
-  size_t allocated_size;
+  String *numbers_sequence; /**< Tablica struktur reprezentujących napisy. */
+  size_t size; /**< Liczba elementów w tablicy @p numbers_sequence. */
+  size_t allocated_size; /**< Liczba elementów, na jakie @p numbers_sequence ma
+                            miejsce w pamięci. */
 };
 
 /** @brief Tworzy nową strukturę.
