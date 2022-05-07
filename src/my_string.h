@@ -17,6 +17,7 @@
  * Makro reprezentujące znak zerowy.
  */
 #define NULL_CHAR '\0'
+
 /**
  * Marko reprezentujące pusty napis.
  */
@@ -25,12 +26,17 @@
 /**
  * Struktura służąca do przechowywania napisów.
  */
-typedef struct String {
+struct String {
   char *content; /**< Tablica znaków. */
   size_t size;   /**< Liczba przechowywanych znaków, nie licząc znaku '\0'. */
   size_t allocated_size; /**< Liczba elementów, na jakie @p content ma miejsc w
                             pamięci. */
-} String;
+};
+
+/**
+ * Typ reprezentujący napisy.
+ */
+typedef struct String String;
 
 /** @brief Inicjuje strukturę.
  * Inicjuje strukturę przechowującą napis. Jeśli @p size jest równe @p 0, nie

@@ -50,7 +50,7 @@ void free_trie(Trie *trie);
  * powiedzie się. W wypadku błędu drzewo z korzeniem @p root nadal jest
  * poprawnym drzewem.
  */
-bool add_value(Trie *root, String *route, String *value);
+bool add_value(Trie *root, const String *route, String *value);
 
 /** @brief Usuwa poddrzewo.
  * Usuwa poddrzewo, do którego prowadzi ścieżka @p route_to_subtree. Funkcja
@@ -80,6 +80,6 @@ void remove_subtree(Trie **root, char const *route_to_subtree);
  * @return Wartość @p true jeśli wszystkie operacja powiodą się. Jeśli wystąpi
  * błąd alokacji pamięci, wynikiem jest wartość @p false.
  */
-bool get_num_forward_from_trie(Trie *root, String *num, String *result);
+bool get_num_forward_from_trie(Trie *root, const String *num, String *result);
 
 #endif//_TRIE_

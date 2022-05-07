@@ -2,6 +2,7 @@
  * Interfejs modułu obsługującego przekierowania numerów telefonicznych
  *
  * @author Marcin Peczarski <marpe@mimuw.edu.pl>
+ * @author Mikołaj Piróg <mp429583@students.mimuw.edu.pl>
  * @copyright Uniwersytet Warszawski
  * @date 2022
  */

@@ -15,7 +15,7 @@ struct Trie {
   Trie *parent; /**< Wskaźnik na rodzica węzła. */
 };
 
-bool init_trie(Trie **trie, char prefix, Trie *parent) {
+bool init_trie(Trie **trie, const char prefix, Trie *parent) {
   *trie = malloc(sizeof(Trie));
   if (!check_alloc(*trie))
     return false;
@@ -32,9 +32,6 @@ bool init_trie(Trie **trie, char prefix, Trie *parent) {
     return false;
   }
 
-  // In this case this operation will never fail, because memory for number has
-  // been allocated in string initialization.
-
   (*trie)->number = prefix;
   (*trie)->parent = parent;
 
@@ -47,7 +44,7 @@ bool init_trie(Trie **trie, char prefix, Trie *parent) {
  * @return Wskaźnik na pierwsze dziecko nie będące @p NULL, lub @p NULL, jeśli
  * takie nie istnieje.
  */
-Trie *get_first_non_null_child(Trie *node) {
+Trie *get_first_non_null_child(const Trie *node) {
   for (size_t i = 0; i < ALPHABET_SIZE; i++) {
     if (node->children[i] != NULL)
       return node->children[i];
@@ -90,7 +87,7 @@ void free_trie(Trie *trie) {
  * @param[in] number - znak szukanego dziecka;
  * @return Wskaźnik na dziecko o znaku równym @p number.
  */
-Trie *get_child(Trie *root, const char number) {
+Trie *get_child(const Trie *root, const char number) {
   return root->children[number_char_to_int(number)];
 }
 
@@ -104,7 +101,7 @@ void add_child_to_trie(Trie *node, Trie *child) {
   node->children[number_char_to_int(child->number)] = child;
 }
 
-bool add_value(Trie *root, String *route, String *value) {
+bool add_value(Trie *root, const String *route, String *value) {
   Trie *current_node = root;
   for (size_t i = 0; i < route->size; i++) {
     Trie *next_node = get_child(current_node, route->content[i]);
@@ -161,7 +158,7 @@ void remove_subtree(Trie **root, char const *route_to_subtree) {
   }
 }
 
-bool get_num_forward_from_trie(Trie *root, String *num, String *result) {
+bool get_num_forward_from_trie(Trie *root, const String *num, String *result) {
   String *potential_value = NULL;
   size_t potential_value_depth = 0;
   Trie *current_node = root;
