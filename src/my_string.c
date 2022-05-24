@@ -56,7 +56,7 @@ bool insert_str(String *str, const char to_insert, const size_t location) {
  * @return Wartość @p true, jeśli operacja powiedzie się. Wartość @p false,
  * jeśli nie uda się zaalokować pamięci.
  */
-bool null_terminate(String *str) {
+static bool null_terminate(String *str) {
   if (!insert_str(str, NULL_CHAR, str->size))
     return false;
 

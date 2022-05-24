@@ -36,7 +36,7 @@ struct PhoneNumbers {
  * @return Wskaźnik na utworzoną strukturę, lub @p NULL gdy nie udało się
  * zaalokować pamięci.
  */
-PhoneNumbers *phone_numbers_new(const size_t size) {
+static PhoneNumbers *phone_numbers_new(const size_t size) {
   PhoneNumbers *result = malloc(sizeof(PhoneNumbers));
   if (!check_alloc(result))
     return NULL;
@@ -70,7 +70,7 @@ PhoneNumbers *phone_numbers_new(const size_t size) {
  * @return Wartość @p true, jeśli operacje powiodą się. Wartość @p false, jeśli
  * ewentualna alokacja pamięci nie powiedzie się.
  */
-bool push_back_numbers(PhoneNumbers *numbers, const String *number) {
+static bool push_back_numbers(PhoneNumbers *numbers, const String *number) {
   if (numbers->size == numbers->allocated_size) {
     String *new_array = realloc(numbers->numbers_sequence,
                                 numbers->allocated_size * REALLOC_MULTIPLIER *

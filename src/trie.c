@@ -54,7 +54,7 @@ bool init_trie(Trie **trie, const char prefix, Trie *parent) {
  * @return Wskaźnik na pierwsze dziecko nie będące @p NULL, lub @p NULL, jeśli
  * takie nie istnieje.
  */
-Trie *get_first_non_null_child(const Trie *node) {
+static Trie *get_first_non_null_child(const Trie *node) {
   for (size_t i = 0; i < ALPHABET_SIZE; i++) {
     if (node->children[i] != NULL)
       return node->children[i];
@@ -99,7 +99,7 @@ void free_trie(Trie *trie) {
  * @param[in] number - znak szukanego dziecka;
  * @return Wskaźnik na dziecko o znaku równym @p number.
  */
-Trie *get_child(const Trie *root, const char number) {
+static Trie *get_child(const Trie *root, const char number) {
   return root->children[number_char_to_int(number)];
 }
 
@@ -109,7 +109,7 @@ Trie *get_child(const Trie *root, const char number) {
  * @param[in] node - wskaźnik na węzeł będący rodzicem;
  * @param[in] child - wskaźnik na węzeł będący dzieckiem;
  */
-void add_child_to_trie(Trie *node, Trie *child) {
+static void add_child_to_trie(Trie *node, Trie *child) {
   node->children[number_char_to_int(child->number)] = child;
 }
 
