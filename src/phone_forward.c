@@ -17,6 +17,7 @@
  */
 struct PhoneForward {
   Trie *root; /**< Wskaźnik na korzeń drzewa Trie. */
+  Trie *reverse_trie_root;
 };
 
 /**
@@ -29,14 +30,7 @@ struct PhoneNumbers {
                             miejsce w pamięci. */
 };
 
-/** @brief Tworzy nową strukturę.
- * Tworzy nową strukturę przechowującą numery telefonu. Alokuje pamięć na @p
- * size numerów telefonu. Jeśli @p size ma wartość zero, nie alokuje pamięci.
- * @param[in] size - liczba numerów telefonów, na jaką struktura ma mieć pamięć;
- * @return Wskaźnik na utworzoną strukturę, lub @p NULL gdy nie udało się
- * zaalokować pamięci.
- */
-static PhoneNumbers *phone_numbers_new(const size_t size) {
+PhoneNumbers *phnumNew(size_t size) {
   PhoneNumbers *result = malloc(sizeof(PhoneNumbers));
   if (!check_alloc(result))
     return NULL;
@@ -70,7 +64,7 @@ static PhoneNumbers *phone_numbers_new(const size_t size) {
  * @return Wartość @p true, jeśli operacje powiodą się. Wartość @p false, jeśli
  * ewentualna alokacja pamięci nie powiedzie się.
  */
-static bool push_back_numbers(PhoneNumbers *numbers, const String *number) {
+bool push_back_numbers(PhoneNumbers *numbers, const String *number) {
   if (numbers->size == numbers->allocated_size) {
     String *new_array = realloc(numbers->numbers_sequence,
                                 numbers->allocated_size * REALLOC_MULTIPLIER *
@@ -107,13 +101,22 @@ PhoneForward *phfwdNew() {
     return NULL;
 
   Trie *trie;
-  if (!init_trie(&trie, NULL_CHAR, NULL)) {
+  if (!init_trie(&trie, NULL_CHAR, NULL, false)) {
     free(result);
 
     return NULL;
   }
 
+  Trie *reverse_trie;
+  if (!init_trie(&reverse_trie, NULL_CHAR, NULL, true)) {
+    free(result);
+    free(trie);
+
+    return NULL;
+  }
+
   result->root = trie;
+  result->reverse_trie_root = reverse_trie;
 
   return result;
 }
@@ -145,13 +148,27 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
   if (!parse_chars_to_string_wrapper(num1, &num1_string, NULL) ||
       !parse_chars_to_string_wrapper(num2, &num2_string, NULL) ||
       !strcmp(num1, num2) || is_empty_string(&num1_string) ||
-      is_empty_string(&num2_string) ||
-      !add_value(pf->root, &num1_string, &num2_string)) {
+      is_empty_string(&num2_string)) {
     free_string(&num1_string);
     free_string(&num2_string);
 
     return false;
   }
+
+  Trie *trie_result = add_value(pf->root, &num1_string, &num2_string);
+  if(!check_alloc(trie_result)) {
+    //todo
+  }
+
+  Trie *reverse_trie_result = add_value(pf->reverse_trie_root, &num2_string, &num1_string);
+  if(!check_alloc(reverse_trie_result)) {
+    //todo
+  }
+
+  printf("%s\n", reverse_trie_result->reverse_trie_phone_numbers->numbers_sequence->content);
+
+  //set trie
+
 
   free_string(&num1_string);
 
@@ -176,7 +193,7 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
 
   String num_str;
   String forwarded_number;
-  PhoneNumbers *result = phone_numbers_new(1);
+  PhoneNumbers *result = phnumNew(1);
 
   if (!check_alloc(result))
     return NULL;

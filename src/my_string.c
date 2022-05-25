@@ -95,7 +95,7 @@ int number_char_to_int(const char number) {
     return 10;
   if (number == '#')
     return 11;
-  else if (number >= '0' && number <= '9')
+  else
     return (int) (number - '0');
 }
 

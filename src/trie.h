@@ -20,6 +20,21 @@
  */
 typedef struct Trie Trie;
 
+// for debug
+struct Trie {
+  char number; /**< Prefiks przechowywany w węźle. */
+  bool is_reverse_trie;
+  union {
+    struct {
+      String forward_number; /**< Przekierowywał numer telefony. */
+      Trie *ptr_to_node_in_reverse_trie;
+    };
+    PhoneNumbers *reverse_trie_phone_numbers;
+  };
+  Trie **children; /**< Tablica wskaźników dzieci węzła. */
+  Trie *parent;    /**< Wskaźnik na rodzica węzła. */
+};
+
 /** @brief Inicjuje węzeł Trie.
  * Inicjuje węzeł Trie, ustawiając @p prefix jako prefiks oraz @p parent
  * jako rodzica. Jako wartość przechowywaną w węźle ustawia pusty napis. Zakłada
@@ -30,7 +45,7 @@ typedef struct Trie Trie;
  * @return @p Wartość true, jeśli alokacja pamięci powiedzie się. Wartość @p
  * false w przeciwnym wypadku.
  */
-bool init_trie(Trie **trie, char prefix, Trie *parent);
+bool init_trie(Trie **trie, const char prefix, Trie *parent, bool is_reverse);
 
 /** @brief Zwalnia węzeł i wszystkiego jego dzieci.
  * Zwalnia węzeł i wszystkiego jego dzieci. Funkcja zawsze się powiedzie.
@@ -50,7 +65,7 @@ void free_trie(Trie *trie);
  * powiedzie się. W wypadku błędu drzewo z korzeniem @p root nadal jest
  * poprawnym drzewem.
  */
-bool add_value(Trie *root, const String *route, String *value);
+Trie *add_value(Trie *root, const String *route, String *value);
 
 /** @brief Usuwa poddrzewo.
  * Usuwa poddrzewo, do którego prowadzi ścieżka @p route_to_subtree. Funkcja

@@ -17,7 +17,7 @@ int main() {
 
   phfwdAdd(pf, "***", "###");
 
-  pnum = phfwdGet(pf, "***123");
+  pnum = phfwdGet(pf, "###");
 
   printf("%s\n", phnumGet(pnum,0));
 

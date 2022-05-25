@@ -13,6 +13,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include "my_string.h"
+
 
 /**
  * To jest deklaracja struktury przechowującej przekierowania numerów telefonów.
@@ -122,5 +124,27 @@ void phnumDelete(PhoneNumbers *pnum);
  *         wskaźnik @p pnum ma wartość NULL lub indeks ma za dużą wartość.
  */
 char const *phnumGet(PhoneNumbers const *pnum, size_t idx);
+
+
+/** @brief Tworzy nową strukturę.
+ * Tworzy nową strukturę przechowującą numery telefonu. Alokuje pamięć na @p
+ * size numerów telefonu. Jeśli @p size ma wartość zero, nie alokuje pamięci.
+ * @param[in] size - liczba numerów telefonów, na jaką struktura ma mieć pamięć;
+ * @return Wskaźnik na utworzoną strukturę, lub @p NULL gdy nie udało się
+ * zaalokować pamięci.
+ */
+PhoneNumbers *phnumNew(size_t size);
+
+
+/** @brief Wstawia numer telefonu do struktury.
+ * Wstawia numer telefonu do struktury. Alokuje pamięć, jeśli zachodzi taka
+ * potrzeba. Funkcja zakłada poprawność parametrów. Po nieudanej alokacji
+ * struktura pod wskaźnikiem @p numbers nadal jest poprawna.
+ * @param[in,out] numbers - wskaźnik na strukturę przechowującą numery telefonu;
+ * @param[in] number - numer telefonu;
+ * @return Wartość @p true, jeśli operacje powiodą się. Wartość @p false, jeśli
+ * ewentualna alokacja pamięci nie powiedzie się.
+ */
+bool push_back_numbers(PhoneNumbers *numbers, const String *number);
 
 #endif /* __PHONE_FORWARD_H__ */

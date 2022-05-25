@@ -7,22 +7,17 @@
 
 #include <ctype.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "memory_management.h"
+#include "phone_forward.h"
 #include "trie.h"
 
 /**
  * Struktura implementująca drzewa Trie.
  */
-struct Trie {
-  char number;           /**< Prefiks przechowywany w węźle. */
-  String forward_number; /**< Przekierowywał numer telefony. */
-  Trie **children;       /**< Tablica wskaźników dzieci węzła. */
-  Trie *parent;          /**< Wskaźnik na rodzica węzła. */
-};
 
-bool init_trie(Trie **trie, const char prefix, Trie *parent) {
+
+bool init_trie(Trie **trie, const char prefix, Trie *parent, bool is_reverse) {
   *trie = malloc(sizeof(Trie));
   if (!check_alloc(*trie))
     return false;
@@ -34,15 +29,32 @@ bool init_trie(Trie **trie, const char prefix, Trie *parent) {
     return false;
   }
 
-  if (!init_string(&(*trie)->forward_number, 0)) {
-    free(*trie);
-    free((*trie)->children);
+  if (is_reverse) {
+    (*trie)->reverse_trie_phone_numbers = phnumNew(START_ARRAY_SIZE_SMALL);
+    if (!check_alloc((*trie)->reverse_trie_phone_numbers)) {
+      free((*trie)->children);
+      free(*trie);
 
-    return false;
+      return false;
+    }
+  } else {
+    if (!init_string(&(*trie)->forward_number, 0)) {
+      free((*trie)->children);// Order of this was reversed which most likely
+                              // was a bug
+      free(*trie);
+
+      return false;
+    }
   }
 
   (*trie)->number = prefix;
   (*trie)->parent = parent;
+  if (is_reverse) {
+    (*trie)->is_reverse_trie = true;
+  } else {
+    (*trie)->ptr_to_node_in_reverse_trie = NULL;
+    (*trie)->is_reverse_trie = false;
+  }
 
   return true;
 }
@@ -113,15 +125,16 @@ static void add_child_to_trie(Trie *node, Trie *child) {
   node->children[number_char_to_int(child->number)] = child;
 }
 
-bool add_value(Trie *root, const String *route, String *value) {
+Trie *add_value(Trie *root, const String *route, String *value) {
   Trie *current_node = root;
   for (size_t i = 0; i < route->size; i++) {
     Trie *next_node = get_child(current_node, route->content[i]);
 
     if (next_node == NULL) {
       Trie *potential_next_node;
-      if (!init_trie(&potential_next_node, route->content[i], current_node))
-        return false;
+      if (!init_trie(&potential_next_node, route->content[i], current_node,
+                     current_node->is_reverse_trie))
+        return NULL;
 
       add_child_to_trie(current_node, potential_next_node);
       current_node = potential_next_node;
@@ -129,14 +142,19 @@ bool add_value(Trie *root, const String *route, String *value) {
       current_node = next_node;
     }
   }
-  if (current_node->forward_number.size == 0) {
-    current_node->forward_number = *value;
+
+  if (current_node->is_reverse_trie) {
+    push_back_numbers(current_node->reverse_trie_phone_numbers, value);
   } else {
-    free_string(&current_node->forward_number);
-    current_node->forward_number = *value;
+    if (current_node->forward_number.size == 0) {
+      current_node->forward_number = *value;
+    } else {
+      free_string(&current_node->forward_number);
+      current_node->forward_number = *value;
+    }
   }
 
-  return true;
+  return current_node;
 }
 
 void remove_subtree(Trie **root, char const *route_to_subtree) {
@@ -203,3 +221,4 @@ bool get_num_forward_from_trie(Trie *root, const String *num, String *result) {
 
   return true;
 }
+
