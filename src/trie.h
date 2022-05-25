@@ -11,7 +11,7 @@
 /**
  * Makro opisujące wielkość alfabetu drzew Trie.
  */
-#define ALPHABET_SIZE 10
+#define ALPHABET_SIZE 12
 
 #include "my_string.h"
 

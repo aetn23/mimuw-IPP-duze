@@ -90,12 +90,25 @@ bool is_empty_string(const String *string) {
   return !(bool) strcmp(string->content, EMPTY_STRING);
 }
 
-int number_char_to_int(const char number) { return (int) (number - '0'); }
+int number_char_to_int(const char number) { 
+  if (number == '*')
+    return 10;
+  if (number == '#')
+    return 11;
+  else if (number >= '0' && number <= '9')
+    return (int) (number - '0');
+}
+
+static bool is_proper_digit(char digit) {
+  if (digit == '*' || digit == '#' || (digit > '0' && digit < '9'))
+    return true;
+  return false;
+}
 
 bool parse_chars_to_string_wrapper(char const *chars, String *result,
                                    bool *memory_failure) {
   for (size_t i = 0; chars[i] != NULL_CHAR; i++) {
-    if (!isdigit(chars[i]))
+    if (!is_proper_digit(chars[i]))
       return false;
 
     if (!insert_str(result, chars[i], result->size)) {

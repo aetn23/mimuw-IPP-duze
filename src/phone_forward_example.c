@@ -5,10 +5,26 @@
 #include "phone_forward.h"
 #include <assert.h>
 #include <string.h>
+#include <stdio.h>
 
 #define MAX_LEN 23
 
 int main() {
+  
+  PhoneForward *pf;
+  pf = phfwdNew();
+  PhoneNumbers *pnum;
+
+  phfwdAdd(pf, "***", "###");
+
+  pnum = phfwdGet(pf, "***123");
+
+  printf("%s\n", phnumGet(pnum,0));
+
+  phfwdDelete(pf);
+  phnumDelete(pnum);
+
+  /*
   char num1[MAX_LEN + 1], num2[MAX_LEN + 1];
   PhoneForward *pf;
   PhoneNumbers *pnum;
@@ -140,4 +156,5 @@ int main() {
   assert(phnumGet(pnum, 1) == NULL);
   phnumDelete(pnum);
   phfwdDelete(pf);
+  */
 }
