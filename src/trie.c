@@ -90,7 +90,12 @@ void free_trie(Trie *trie) {
 
     Trie *next_node = current_node->parent;
     if (next_node == NULL) {
-      free_string(&current_node->forward_number);
+      if (current_node->is_reverse_trie) {
+        phnumDelete(current_node->reverse_trie_phone_numbers);
+      } else {
+        free_string(&current_node->forward_number);
+      }
+
       free(current_node->children);
       free(current_node);
 
@@ -98,7 +103,12 @@ void free_trie(Trie *trie) {
     }
 
     next_node->children[number_char_to_int(current_node->number)] = NULL;
-    free_string(&current_node->forward_number);
+    if (current_node->is_reverse_trie) {
+      phnumDelete(current_node->reverse_trie_phone_numbers);
+    } else {
+      free_string(&current_node->forward_number);
+    }
+
     free(current_node->children);
     free(current_node);
     current_node = next_node;
@@ -144,6 +154,9 @@ Trie *add_value(Trie *root, const String *route, String *value) {
   }
 
   if (current_node->is_reverse_trie) {
+    if (current_node->reverse_trie_phone_numbers == NULL) {
+      current_node->reverse_trie_phone_numbers = phnumNew(START_ARRAY_SIZE_SMALL);
+    }
     push_back_numbers(current_node->reverse_trie_phone_numbers, value);
   } else {
     if (current_node->forward_number.size == 0) {
@@ -222,3 +235,10 @@ bool get_num_forward_from_trie(Trie *root, const String *num, String *result) {
   return true;
 }
 
+PhoneNumbers *get_reversed_numbers(Trie *reverse_trie_root,
+                                   const String *route) {
+  if (!reverse_trie_root->is_reverse_trie)
+    return NULL;
+
+  return NULL;
+}

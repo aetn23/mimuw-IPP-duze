@@ -125,6 +125,7 @@ void phfwdDelete(PhoneForward *pf) {
   if (pf == NULL)
     return;
 
+  free_trie(pf->reverse_trie_root);
   free_trie(pf->root);
   free(pf);
 }
@@ -157,20 +158,26 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
 
   Trie *trie_result = add_value(pf->root, &num1_string, &num2_string);
   if(!check_alloc(trie_result)) {
-    //todo
+    free_string(&num1_string);
+    free_string(&num2_string);
+
+    return false;
   }
 
   Trie *reverse_trie_result = add_value(pf->reverse_trie_root, &num2_string, &num1_string);
   if(!check_alloc(reverse_trie_result)) {
-    //todo
+    free_string(&num1_string);
+    free_string(&num2_string);
+    free_trie(trie_result);
+
+    return false;
   }
 
-  printf("%s\n", reverse_trie_result->reverse_trie_phone_numbers->numbers_sequence->content);
-
+  trie_result->ptr_to_node_in_reverse_trie = reverse_trie_result;
   //set trie
 
 
-  free_string(&num1_string);
+  //free_string(&num1_string);
 
   return true;
 }
