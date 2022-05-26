@@ -97,4 +97,7 @@ void remove_subtree(Trie **root, char const *route_to_subtree);
  */
 bool get_num_forward_from_trie(Trie *root, const String *num, String *result);
 
+PhoneNumbers *get_reversed_numbers(Trie *reverse_trie_root,
+                                   const String *route);
+
 #endif//_TRIE_

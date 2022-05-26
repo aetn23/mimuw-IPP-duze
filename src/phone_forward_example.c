@@ -21,8 +21,11 @@ int main() {
 
   printf("%s\n", phnumGet(pnum,0));
 
+  PhoneNumbers *test = phfwdReverse(pf, "###");
+
   phfwdDelete(pf);
   phnumDelete(pnum);
+  phnumDelete(test);
 
   /*
   char num1[MAX_LEN + 1], num2[MAX_LEN + 1];

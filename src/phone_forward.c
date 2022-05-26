@@ -58,7 +58,8 @@ PhoneNumbers *phnumNew(size_t size) {
 /** @brief Wstawia numer telefonu do struktury.
  * Wstawia numer telefonu do struktury. Alokuje pamięć, jeśli zachodzi taka
  * potrzeba. Funkcja zakłada poprawność parametrów. Po nieudanej alokacji
- * struktura pod wskaźnikiem @p numbers nadal jest poprawna.
+ * struktura pod wskaźnikiem @p numbers nadal jest poprawna. Przejmuje @p number
+ * na własność.
  * @param[in,out] numbers - wskaźnik na strukturę przechowującą numery telefonu;
  * @param[in] number - numer telefonu;
  * @return Wartość @p true, jeśli operacje powiodą się. Wartość @p false, jeśli
@@ -157,15 +158,16 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
   }
 
   Trie *trie_result = add_value(pf->root, &num1_string, &num2_string);
-  if(!check_alloc(trie_result)) {
+  if (!check_alloc(trie_result)) {
     free_string(&num1_string);
     free_string(&num2_string);
 
     return false;
   }
 
-  Trie *reverse_trie_result = add_value(pf->reverse_trie_root, &num2_string, &num1_string);
-  if(!check_alloc(reverse_trie_result)) {
+  Trie *reverse_trie_result =
+          add_value(pf->reverse_trie_root, &num2_string, &num1_string);
+  if (!check_alloc(reverse_trie_result)) {
     free_string(&num1_string);
     free_string(&num2_string);
     free_trie(trie_result);
@@ -174,10 +176,10 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
   }
 
   trie_result->ptr_to_node_in_reverse_trie = reverse_trie_result;
-  //set trie
+  // set trie
 
 
-  //free_string(&num1_string);
+  // free_string(&num1_string);
 
   return true;
 }
@@ -192,6 +194,13 @@ char const *phnumGet(PhoneNumbers const *pnum, size_t idx) {
     return NULL;
 
   return pnum->numbers_sequence[idx].content;
+}
+
+const String *phnumGetString(PhoneNumbers const *pnum, size_t idx) {
+  if (pnum == NULL || idx >= pnum->size)
+    return NULL;
+
+  return &pnum->numbers_sequence[idx];
 }
 
 PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
@@ -256,7 +265,14 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
 }
 
 PhoneNumbers *phfwdReverse(PhoneForward const *pf, char const *num) {
-  (void) pf;
-  (void) num;
-  return NULL;
+  String num_as_str;
+  init_string(&num_as_str, START_ARRAY_SIZE_SMALL);
+
+  parse_chars_to_string_wrapper(num, &num_as_str, NULL);
+
+  PhoneNumbers *result = get_reversed_numbers(pf->reverse_trie_root, &num_as_str);
+
+
+  free_string(&num_as_str);
+  return result;
 }
