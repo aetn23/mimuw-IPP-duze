@@ -272,7 +272,8 @@ PhoneNumbers *phfwdReverse(PhoneForward const *pf, char const *num) {
 
   PhoneNumbers *result = get_reversed_numbers(pf->reverse_trie_root, &num_as_str);
 
+  push_back_numbers(result, &num_as_str);
 
-  free_string(&num_as_str);
+
   return result;
 }

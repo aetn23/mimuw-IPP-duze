@@ -10,7 +10,7 @@
 #define MAX_LEN 23
 
 int main() {
-  
+  /*
   PhoneForward *pf;
   pf = phfwdNew();
   PhoneNumbers *pnum;
@@ -26,8 +26,8 @@ int main() {
   phfwdDelete(pf);
   phnumDelete(pnum);
   phnumDelete(test);
+*/
 
-  /*
   char num1[MAX_LEN + 1], num2[MAX_LEN + 1];
   PhoneForward *pf;
   PhoneNumbers *pnum;
@@ -92,6 +92,7 @@ int main() {
   assert(phnumGet(pnum, 2) == NULL);
   phnumDelete(pnum);
 
+   /*
   phfwdRemove(pf, "12");
 
   pnum = phfwdGet(pf, "123456");
@@ -157,7 +158,9 @@ int main() {
   pnum = phfwdReverse(pf, "7581");
   assert(strcmp(phnumGet(pnum, 0), "7581") == 0);
   assert(phnumGet(pnum, 1) == NULL);
+
+
   phnumDelete(pnum);
   phfwdDelete(pf);
-  */
+    */
 }

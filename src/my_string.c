@@ -100,7 +100,7 @@ int number_char_to_int(const char number) {
 }
 
 static bool is_proper_digit(char digit) {
-  if (digit == '*' || digit == '#' || (digit > '0' && digit < '9'))
+  if (digit == '*' || digit == '#' || (digit >= '0' && digit <= '9'))
     return true;
   return false;
 }

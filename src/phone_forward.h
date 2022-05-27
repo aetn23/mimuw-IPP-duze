@@ -149,4 +149,7 @@ bool push_back_numbers(PhoneNumbers *numbers, const String *number);
 
 const String *phnumGetString(PhoneNumbers const *pnum, size_t idx);
 
+
+
+
 #endif /* __PHONE_FORWARD_H__ */
