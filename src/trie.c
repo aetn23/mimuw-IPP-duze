@@ -247,16 +247,19 @@ PhoneNumbers *get_reversed_numbers(Trie *reverse_trie_root,
   for (size_t i = 0; i < route->size; i++) {
     current_node = get_child(current_node, route->content[i]);
 
-    if(current_node == NULL)
+    if (current_node == NULL)
       break;
 
     if (current_node->reverse_trie_phone_numbers != NULL) {
       size_t j = 0;
-      while (phnumGetString(current_node->reverse_trie_phone_numbers, j) != NULL) {
+      while (phnumGetString(current_node->reverse_trie_phone_numbers, j) !=
+             NULL) {
         String reverse_number;
         init_string(&reverse_number, START_ARRAY_SIZE_SMALL);
 
-        concatenate_from_to(phnumGetString(current_node->reverse_trie_phone_numbers, j), route, i + 1, route->size, &reverse_number);
+        concatenate_from_to(
+                phnumGetString(current_node->reverse_trie_phone_numbers, j),
+                route, i + 1, route->size, &reverse_number);
 
         push_back_numbers(result, &reverse_number);
 

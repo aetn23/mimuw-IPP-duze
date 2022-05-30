@@ -91,6 +91,7 @@ int main() {
   assert(strcmp(phnumGet(pnum, 1), "987654321") == 0);
   assert(phnumGet(pnum, 2) == NULL);
   phnumDelete(pnum);
+  //phfwdDelete(pf);
 
    /*
   phfwdRemove(pf, "12");

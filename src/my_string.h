@@ -126,4 +126,6 @@ int number_char_to_int(char number);
 bool parse_chars_to_string_wrapper(char const *chars, String *result,
                                    bool *memory_failure);
 
+int string_compare(const void *str1, const void *str2);
+
 #endif//_MY_STRING_

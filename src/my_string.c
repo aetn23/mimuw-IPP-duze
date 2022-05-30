@@ -121,3 +121,7 @@ bool parse_chars_to_string_wrapper(char const *chars, String *result,
 
   return null_terminate(result);
 }
+
+int string_compare(const void *str1, const void *str2) {
+  return strcmp(((String*)str1)->content, ((String*)str2)->content);
+}

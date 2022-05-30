@@ -275,5 +275,7 @@ PhoneNumbers *phfwdReverse(PhoneForward const *pf, char const *num) {
   push_back_numbers(result, &num_as_str);
 
 
+  qsort(result->numbers_sequence, result->size, sizeof (String), &string_compare);
+
   return result;
 }
