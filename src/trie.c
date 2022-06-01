@@ -197,7 +197,7 @@ void remove_subtree(Trie **root, char const *route_to_subtree) {
   Trie *previous_node = NULL;
 
   for (size_t i = 0; route_to_subtree[i] != NULL_CHAR; i++) {
-    if (!isdigit(route_to_subtree[i]))
+    if (!is_proper_digit(route_to_subtree[i]))
       return;
 
     Trie *potential_next_node = get_child(current_node, route_to_subtree[i]);

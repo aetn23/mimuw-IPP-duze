@@ -128,4 +128,6 @@ bool parse_chars_to_string_wrapper(char const *chars, String *result,
 
 int string_compare(const void *str1, const void *str2);
 
+bool is_proper_digit(char digit);
+
 #endif//_MY_STRING_

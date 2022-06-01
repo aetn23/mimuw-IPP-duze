@@ -99,7 +99,7 @@ int number_char_to_int(const char number) {
     return (int) (number - '0');
 }
 
-static bool is_proper_digit(char digit) {
+bool is_proper_digit(char digit) {
   if (digit == '*' || digit == '#' || (digit >= '0' && digit <= '9'))
     return true;
   return false;
@@ -129,5 +129,24 @@ int string_compare(const void *str1, const void *str2) {
     return 1;
   else if (((String*)str2)->size == 0)
     return -1;
-  return strcmp(((String*)str1)->content, ((String*)str2)->content);
+
+  size_t smaller_size;
+  if (((String*)str1)->size > ((String*)str2)->size)
+    smaller_size = ((String*)str1)->size;
+  else
+    smaller_size = ((String*)str2)->size;
+
+  for (size_t i = 0; i < smaller_size; i++) {
+    if(number_char_to_int(((String*)str1)->content[i]) > number_char_to_int(((String*)str2)->content[i]))
+      return 1;
+    else if(number_char_to_int(((String*)str1)->content[i]) < number_char_to_int(((String*)str2)->content[i]))
+      return -1;
+  }
+
+  if(((String*)str1)->size > ((String*)str2)->size)
+    return -1;
+  else if(((String*)str1)->size < ((String*)str2)->size)
+    return 1;
+
+  return 0;
 }
