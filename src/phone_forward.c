@@ -81,7 +81,7 @@ String *push_back_numbers(PhoneNumbers *numbers, const String *number) {
   numbers->numbers_sequence[numbers->size] = *number;
   numbers->size++;
 
-  return &(numbers->numbers_sequence[numbers->size-1]);
+  return &(numbers->numbers_sequence[numbers->size - 1]);
 }
 
 void phnumDelete(PhoneNumbers *numbers) {
@@ -157,8 +157,8 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
     return false;
   }
 
-  String *reverse_trie_result =
-          add_value_reverse_trie(pf->reverse_trie_root, &num2_string, &num1_string);
+  String *reverse_trie_result = add_value_reverse_trie(
+          pf->reverse_trie_root, &num2_string, &num1_string);
   if (!check_alloc(reverse_trie_result)) {
     free_string(&num1_string);
     free_string(&num2_string);
@@ -166,18 +166,16 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
     return false;
   }
 
-  Trie *trie_result = add_value_normale_trie(pf->root, &num1_string, &num2_string, reverse_trie_result);
+  Trie *trie_result = add_value_normal_trie(pf->root, &num1_string,
+                                            &num2_string, reverse_trie_result);
   if (!check_alloc(trie_result)) {
     free_string(&num1_string);
     free_string(&num2_string);
-    //free_trie(reverse_trie_result, false);
+    // free_trie(reverse_trie_result, false);
 
 
     return false;
   }
-
-  
-
 
 
   // free_string(&num1_string);
@@ -195,10 +193,11 @@ char const *phnumGet(PhoneNumbers const *pnum, size_t idx) {
     return NULL;
 
   if (pnum->numbers_sequence->size == 0)
-      return NULL;
-
-  if (idx > 0 && strcmp(pnum->numbers_sequence[idx].content, pnum->numbers_sequence[idx-1].content) == 0)
     return NULL;
+
+  // if (idx > 0 && strcmp(pnum->numbers_sequence[idx].content,
+  // pnum->numbers_sequence[idx-1].content) == 0)
+  //  return NULL;
 
   return pnum->numbers_sequence[idx].content;
 }
@@ -208,7 +207,7 @@ const String *phnumGetString(PhoneNumbers const *pnum, size_t idx) {
     return NULL;
 
   if (pnum->numbers_sequence[idx].size == 0)
-    return phnumGetString(pnum, idx+1);
+    return phnumGetString(pnum, idx + 1);
 
   return &pnum->numbers_sequence[idx];
 }
@@ -274,18 +273,39 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
   return result;
 }
 
+
+void remove_repetitions(PhoneNumbers *pnum) {
+  for (size_t i = 0; i < pnum->size - 1; i++) {
+    if (pnum->numbers_sequence[i].size == 0)
+      return;
+
+    if (strcmp(pnum->numbers_sequence[i].content,
+               pnum->numbers_sequence[i + 1].content) == 0) {
+      free_string(&pnum->numbers_sequence[i]);
+      init_string(&pnum->numbers_sequence[i], 0);
+    }
+  }
+}
+
 PhoneNumbers *phfwdReverse(PhoneForward const *pf, char const *num) {
   String num_as_str;
   init_string(&num_as_str, START_ARRAY_SIZE_SMALL);
 
   parse_chars_to_string_wrapper(num, &num_as_str, NULL);
 
-  PhoneNumbers *result = get_reversed_numbers(pf->reverse_trie_root, &num_as_str);
+  PhoneNumbers *result =
+          get_reversed_numbers(pf->reverse_trie_root, &num_as_str);
 
   push_back_numbers(result, &num_as_str);
 
 
-  qsort(result->numbers_sequence, result->size, sizeof (String), &string_compare);
+  qsort(result->numbers_sequence, result->size, sizeof(String),
+        &string_compare);
+
+  remove_repetitions(result);
+
+  qsort(result->numbers_sequence, result->size, sizeof(String),
+        &string_compare);
 
   return result;
 }

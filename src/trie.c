@@ -92,7 +92,7 @@ void free_trie(Trie *trie, bool update_reverse) {
     if (next_node == NULL) {
       if (current_node->is_reverse_trie) {
         phnumDelete(current_node->reverse_trie_phone_numbers);
-      } else if (update_reverse && current_node->forward_number.size != 0){
+      } else if (update_reverse && current_node->forward_number.size != 0) {
         free_string(current_node->ptr_to_node_in_reverse_trie);
         init_string(current_node->ptr_to_node_in_reverse_trie, 0);
         free_string(&current_node->forward_number);
@@ -108,14 +108,14 @@ void free_trie(Trie *trie, bool update_reverse) {
 
     next_node->children[number_char_to_int(current_node->number)] = NULL;
     if (current_node->is_reverse_trie) {
-        phnumDelete(current_node->reverse_trie_phone_numbers);
-      } else if (update_reverse && current_node->forward_number.size != 0){
-        free_string(current_node->ptr_to_node_in_reverse_trie);
-        init_string(current_node->ptr_to_node_in_reverse_trie, 0);
-        free_string(&current_node->forward_number);
-      } else {
-        free_string(&current_node->forward_number);
-      }
+      phnumDelete(current_node->reverse_trie_phone_numbers);
+    } else if (update_reverse && current_node->forward_number.size != 0) {
+      free_string(current_node->ptr_to_node_in_reverse_trie);
+      init_string(current_node->ptr_to_node_in_reverse_trie, 0);
+      free_string(&current_node->forward_number);
+    } else {
+      free_string(&current_node->forward_number);
+    }
 
     free(current_node->children);
     free(current_node);
@@ -164,10 +164,11 @@ Trie *add_value_common_part(Trie *root, const String *route) {
   return current_node;
 }
 
-Trie *add_value_normale_trie(Trie *root, const String *route, String *value, String *ptr_to_reverse_trie_value) {
+Trie *add_value_normal_trie(Trie *root, const String *route, String *value,
+                             String *ptr_to_reverse_trie_value) {
   Trie *node_to_add = add_value_common_part(root, route);
 
-  
+
   if (node_to_add->forward_number.size == 0) {
     node_to_add->forward_number = *value;
   } else {
@@ -180,14 +181,13 @@ Trie *add_value_normale_trie(Trie *root, const String *route, String *value, Str
   }
 
   node_to_add->ptr_to_node_in_reverse_trie = ptr_to_reverse_trie_value;
-  
+
   return node_to_add;
 }
 
 String *add_value_reverse_trie(Trie *root, const String *route, String *value) {
   Trie *node_to_add = add_value_common_part(root, route);
 
-  
   return push_back_numbers(node_to_add->reverse_trie_phone_numbers, value);
 }
 

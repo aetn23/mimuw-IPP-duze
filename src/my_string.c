@@ -125,7 +125,9 @@ bool parse_chars_to_string_wrapper(char const *chars, String *result,
 int string_compare(const void *str1, const void *str2) {
   if(((String*)str1)->content == NULL && ((String*)str2)->content == NULL)
     return 0;
-  else if (((String*)str1)->content)
-   -1;
+  else if (((String*)str1)->size == 0)
+    return 1;
+  else if (((String*)str2)->size == 0)
+    return -1;
   return strcmp(((String*)str1)->content, ((String*)str2)->content);
 }

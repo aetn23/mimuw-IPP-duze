@@ -65,7 +65,7 @@ void free_trie(Trie *trie, bool update_reverse);
  * powiedzie się. W wypadku błędu drzewo z korzeniem @p root nadal jest
  * poprawnym drzewem.
  */
-//Trie *add_value(Trie *root, const String *route, String *value);
+// Trie *add_value(Trie *root, const String *route, String *value);
 
 /** @brief Usuwa poddrzewo.
  * Usuwa poddrzewo, do którego prowadzi ścieżka @p route_to_subtree. Funkcja
@@ -100,7 +100,8 @@ bool get_num_forward_from_trie(Trie *root, const String *num, String *result);
 PhoneNumbers *get_reversed_numbers(Trie *reverse_trie_root,
                                    const String *route);
 
-Trie *add_value_normale_trie(Trie *root, const String *route, String *value, String *ptr_to_reverse_trie_value);
+Trie *add_value_normal_trie(Trie *root, const String *route, String *value,
+                             String *ptr_to_reverse_trie_value);
 
 String *add_value_reverse_trie(Trie *root, const String *route, String *value);
 
