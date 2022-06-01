@@ -75,7 +75,7 @@ static Trie *get_first_non_null_child(const Trie *node) {
   return NULL;
 }
 
-void free_trie(Trie *trie) {
+void free_trie(Trie *trie, bool update_reverse) {
   if (trie == NULL)
     return;
 
@@ -92,6 +92,10 @@ void free_trie(Trie *trie) {
     if (next_node == NULL) {
       if (current_node->is_reverse_trie) {
         phnumDelete(current_node->reverse_trie_phone_numbers);
+      } else if (update_reverse && current_node->forward_number.size != 0){
+        free_string(current_node->ptr_to_node_in_reverse_trie);
+        init_string(current_node->ptr_to_node_in_reverse_trie, 0);
+        free_string(&current_node->forward_number);
       } else {
         free_string(&current_node->forward_number);
       }
@@ -104,10 +108,14 @@ void free_trie(Trie *trie) {
 
     next_node->children[number_char_to_int(current_node->number)] = NULL;
     if (current_node->is_reverse_trie) {
-      phnumDelete(current_node->reverse_trie_phone_numbers);
-    } else {
-      free_string(&current_node->forward_number);
-    }
+        phnumDelete(current_node->reverse_trie_phone_numbers);
+      } else if (update_reverse && current_node->forward_number.size != 0){
+        free_string(current_node->ptr_to_node_in_reverse_trie);
+        init_string(current_node->ptr_to_node_in_reverse_trie, 0);
+        free_string(&current_node->forward_number);
+      } else {
+        free_string(&current_node->forward_number);
+      }
 
     free(current_node->children);
     free(current_node);
@@ -135,7 +143,7 @@ static void add_child_to_trie(Trie *node, Trie *child) {
   node->children[number_char_to_int(child->number)] = child;
 }
 
-Trie *add_value(Trie *root, const String *route, String *value) {
+Trie *add_value_common_part(Trie *root, const String *route) {
   Trie *current_node = root;
   for (size_t i = 0; i < route->size; i++) {
     Trie *next_node = get_child(current_node, route->content[i]);
@@ -153,23 +161,36 @@ Trie *add_value(Trie *root, const String *route, String *value) {
     }
   }
 
-  if (current_node->is_reverse_trie) {
-    if (current_node->reverse_trie_phone_numbers == NULL) {
-      current_node->reverse_trie_phone_numbers =
-              phnumNew(START_ARRAY_SIZE_SMALL);
-    }
-    push_back_numbers(current_node->reverse_trie_phone_numbers, value);
-  } else {
-    if (current_node->forward_number.size == 0) {
-      current_node->forward_number = *value;
-    } else {
-      free_string(&current_node->forward_number);
-      current_node->forward_number = *value;
-    }
-  }
-
   return current_node;
 }
+
+Trie *add_value_normale_trie(Trie *root, const String *route, String *value, String *ptr_to_reverse_trie_value) {
+  Trie *node_to_add = add_value_common_part(root, route);
+
+  
+  if (node_to_add->forward_number.size == 0) {
+    node_to_add->forward_number = *value;
+  } else {
+    free_string(&node_to_add->forward_number);
+    free_string(node_to_add->ptr_to_node_in_reverse_trie);
+
+    init_string(node_to_add->ptr_to_node_in_reverse_trie, 0);
+
+    node_to_add->forward_number = *value;
+  }
+
+  node_to_add->ptr_to_node_in_reverse_trie = ptr_to_reverse_trie_value;
+  
+  return node_to_add;
+}
+
+String *add_value_reverse_trie(Trie *root, const String *route, String *value) {
+  Trie *node_to_add = add_value_common_part(root, route);
+
+  
+  return push_back_numbers(node_to_add->reverse_trie_phone_numbers, value);
+}
+
 
 void remove_subtree(Trie **root, char const *route_to_subtree) {
   Trie *current_node = *root;
@@ -192,13 +213,13 @@ void remove_subtree(Trie **root, char const *route_to_subtree) {
   if (previous_node != NULL) {
     previous_node->children[number_char_to_int(current_node->number)] = NULL;
     current_node->parent = NULL;
-    free_trie(current_node);
+    free_trie(current_node, true);
   } else {
     for (size_t i = 0; i < ALPHABET_SIZE; i++) {
       if (current_node->children[i] != NULL)
         current_node->children[i]->parent = NULL;
 
-      free_trie(current_node->children[i]);
+      free_trie(current_node->children[i], true);
       current_node->children[i] = NULL;
     }
   }

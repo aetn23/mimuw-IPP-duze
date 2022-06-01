@@ -27,7 +27,7 @@ struct Trie {
   union {
     struct {
       String forward_number; /**< Przekierowywał numer telefony. */
-      Trie *ptr_to_node_in_reverse_trie;
+      String *ptr_to_node_in_reverse_trie;
     };
     PhoneNumbers *reverse_trie_phone_numbers;
   };
@@ -51,7 +51,7 @@ bool init_trie(Trie **trie, const char prefix, Trie *parent, bool is_reverse);
  * Zwalnia węzeł i wszystkiego jego dzieci. Funkcja zawsze się powiedzie.
  * @param[in,out] trie - wskaźnik na zwalniany węzeł;
  */
-void free_trie(Trie *trie);
+void free_trie(Trie *trie, bool update_reverse);
 
 /** @brief Dodaje wartość do drzewa Trie.
  * Dodaje wartość do drzewa Trie. Miejsce, gdzie wartość ma zostać dodana
@@ -65,7 +65,7 @@ void free_trie(Trie *trie);
  * powiedzie się. W wypadku błędu drzewo z korzeniem @p root nadal jest
  * poprawnym drzewem.
  */
-Trie *add_value(Trie *root, const String *route, String *value);
+//Trie *add_value(Trie *root, const String *route, String *value);
 
 /** @brief Usuwa poddrzewo.
  * Usuwa poddrzewo, do którego prowadzi ścieżka @p route_to_subtree. Funkcja
@@ -99,5 +99,9 @@ bool get_num_forward_from_trie(Trie *root, const String *num, String *result);
 
 PhoneNumbers *get_reversed_numbers(Trie *reverse_trie_root,
                                    const String *route);
+
+Trie *add_value_normale_trie(Trie *root, const String *route, String *value, String *ptr_to_reverse_trie_value);
+
+String *add_value_reverse_trie(Trie *root, const String *route, String *value);
 
 #endif//_TRIE_

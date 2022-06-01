@@ -10,6 +10,8 @@
 #define MAX_LEN 23
 
 int main() {
+
+
   /*
   PhoneForward *pf;
   pf = phfwdNew();
@@ -91,14 +93,14 @@ int main() {
   assert(strcmp(phnumGet(pnum, 1), "987654321") == 0);
   assert(phnumGet(pnum, 2) == NULL);
   phnumDelete(pnum);
-  //phfwdDelete(pf);
 
-   /*
   phfwdRemove(pf, "12");
-
   pnum = phfwdGet(pf, "123456");
-  assert(strcmp(phnumGet(pnum, 0), "123456") == 0);
+    assert(strcmp(phnumGet(pnum, 0), "123456") == 0);
   phnumDelete(pnum);
+
+
+
 
   pnum = phfwdReverse(pf, "987654321");
   assert(strcmp(phnumGet(pnum, 0), "987654321") == 0);
@@ -111,6 +113,7 @@ int main() {
   pnum = phfwdReverse(pf, "08");
   assert(strcmp(phnumGet(pnum, 0), "08") == 0);
   assert(strcmp(phnumGet(pnum, 1), "5678") == 0);
+  //printf("%s\n", phnumGet(pnum, 2));
   assert(phnumGet(pnum, 2) == NULL);
   phnumDelete(pnum);
 
@@ -163,5 +166,4 @@ int main() {
 
   phnumDelete(pnum);
   phfwdDelete(pf);
-    */
 }

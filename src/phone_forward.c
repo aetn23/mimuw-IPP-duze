@@ -65,7 +65,7 @@ PhoneNumbers *phnumNew(size_t size) {
  * @return Wartość @p true, jeśli operacje powiodą się. Wartość @p false, jeśli
  * ewentualna alokacja pamięci nie powiedzie się.
  */
-bool push_back_numbers(PhoneNumbers *numbers, const String *number) {
+String *push_back_numbers(PhoneNumbers *numbers, const String *number) {
   if (numbers->size == numbers->allocated_size) {
     String *new_array = realloc(numbers->numbers_sequence,
                                 numbers->allocated_size * REALLOC_MULTIPLIER *
@@ -81,7 +81,7 @@ bool push_back_numbers(PhoneNumbers *numbers, const String *number) {
   numbers->numbers_sequence[numbers->size] = *number;
   numbers->size++;
 
-  return true;
+  return &(numbers->numbers_sequence[numbers->size-1]);
 }
 
 void phnumDelete(PhoneNumbers *numbers) {
@@ -126,8 +126,8 @@ void phfwdDelete(PhoneForward *pf) {
   if (pf == NULL)
     return;
 
-  free_trie(pf->reverse_trie_root);
-  free_trie(pf->root);
+  free_trie(pf->reverse_trie_root, false);
+  free_trie(pf->root, false);
   free(pf);
 }
 
@@ -157,26 +157,27 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
     return false;
   }
 
-  Trie *trie_result = add_value(pf->root, &num1_string, &num2_string);
-  if (!check_alloc(trie_result)) {
-    free_string(&num1_string);
-    free_string(&num2_string);
-
-    return false;
-  }
-
-  Trie *reverse_trie_result =
-          add_value(pf->reverse_trie_root, &num2_string, &num1_string);
+  String *reverse_trie_result =
+          add_value_reverse_trie(pf->reverse_trie_root, &num2_string, &num1_string);
   if (!check_alloc(reverse_trie_result)) {
     free_string(&num1_string);
     free_string(&num2_string);
-    free_trie(trie_result);
 
     return false;
   }
 
-  trie_result->ptr_to_node_in_reverse_trie = reverse_trie_result;
-  // set trie
+  Trie *trie_result = add_value_normale_trie(pf->root, &num1_string, &num2_string, reverse_trie_result);
+  if (!check_alloc(trie_result)) {
+    free_string(&num1_string);
+    free_string(&num2_string);
+    //free_trie(reverse_trie_result, false);
+
+
+    return false;
+  }
+
+  
+
 
 
   // free_string(&num1_string);
@@ -193,12 +194,21 @@ char const *phnumGet(PhoneNumbers const *pnum, size_t idx) {
   if (pnum == NULL || idx >= pnum->size)
     return NULL;
 
+  if (pnum->numbers_sequence->size == 0)
+      return NULL;
+
+  if (idx > 0 && strcmp(pnum->numbers_sequence[idx].content, pnum->numbers_sequence[idx-1].content) == 0)
+    return NULL;
+
   return pnum->numbers_sequence[idx].content;
 }
 
 const String *phnumGetString(PhoneNumbers const *pnum, size_t idx) {
   if (pnum == NULL || idx >= pnum->size)
     return NULL;
+
+  if (pnum->numbers_sequence[idx].size == 0)
+    return phnumGetString(pnum, idx+1);
 
   return &pnum->numbers_sequence[idx];
 }

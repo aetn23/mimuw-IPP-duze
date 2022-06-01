@@ -145,7 +145,7 @@ PhoneNumbers *phnumNew(size_t size);
  * @return Wartość @p true, jeśli operacje powiodą się. Wartość @p false, jeśli
  * ewentualna alokacja pamięci nie powiedzie się.
  */
-bool push_back_numbers(PhoneNumbers *numbers, const String *number);
+String *push_back_numbers(PhoneNumbers *numbers, const String *number);
 
 const String *phnumGetString(PhoneNumbers const *pnum, size_t idx);
 
