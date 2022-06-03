@@ -497,6 +497,7 @@ int main(int argc, char **argv) {
     phfwdDelete(pf);
   }
 
+  /*
   // This should pass. Memory usage was below 1GB in my implementation, so I would
   // be surprised if anything went past 2-3GB. If it does then there is reason
   // to believe the implementation isn't very good and probably needs some work.
@@ -601,4 +602,5 @@ int main(int argc, char **argv) {
   } else {
     printf("[ERROR]: Allocation failed for bigString test. Skipping...\n");
   }
+   */
 }

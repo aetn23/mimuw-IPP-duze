@@ -165,7 +165,7 @@ Trie *add_value_common_part(Trie *root, const String *route) {
 }
 
 Trie *add_value_normal_trie(Trie *root, const String *route, String *value,
-                             String *ptr_to_reverse_trie_value) {
+                            String *ptr_to_reverse_trie_value) {
   Trie *node_to_add = add_value_common_part(root, route);
 
 
@@ -263,8 +263,11 @@ PhoneNumbers *get_reversed_numbers(Trie *reverse_trie_root,
     return NULL;
 
   PhoneNumbers *result = phnumNew(START_ARRAY_SIZE_SMALL);
-  Trie *current_node = reverse_trie_root;
+  if (!check_alloc(result)) {
+    return NULL;
+  }
 
+  Trie *current_node = reverse_trie_root;
   for (size_t i = 0; i < route->size; i++) {
     current_node = get_child(current_node, route->content[i]);
 
@@ -276,13 +279,22 @@ PhoneNumbers *get_reversed_numbers(Trie *reverse_trie_root,
       while (phnumGetString(current_node->reverse_trie_phone_numbers, j) !=
              NULL) {
         String reverse_number;
-        init_string(&reverse_number, START_ARRAY_SIZE_SMALL);
+        if (!init_string(&reverse_number, START_ARRAY_SIZE_SMALL)) {
+          phnumDelete(result);
 
-        concatenate_from_to(
-                phnumGetString(current_node->reverse_trie_phone_numbers, j),
-                route, i + 1, route->size, &reverse_number);
+          return NULL;
+        }
 
-        push_back_numbers(result, &reverse_number);
+
+        if (!concatenate_from_to(
+                    phnumGetString(current_node->reverse_trie_phone_numbers, j),
+                    route, i + 1, route->size, &reverse_number) ||
+            !push_back_numbers(result, &reverse_number)) {
+          phnumDelete(result);
+          free_string(&reverse_number);
+
+          return NULL;
+        }
 
         j++;
       }

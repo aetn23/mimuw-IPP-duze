@@ -206,8 +206,12 @@ const String *phnumGetString(PhoneNumbers const *pnum, size_t idx) {
   if (pnum == NULL || idx >= pnum->size)
     return NULL;
 
-  if (pnum->numbers_sequence[idx].size == 0)
-    return phnumGetString(pnum, idx + 1);
+  while (pnum->numbers_sequence[idx].size == 0) {
+    idx++;
+
+    if (idx >= pnum->size)
+      return NULL;
+  }
 
   return &pnum->numbers_sequence[idx];
 }
@@ -288,15 +292,44 @@ void remove_repetitions(PhoneNumbers *pnum) {
 }
 
 PhoneNumbers *phfwdReverse(PhoneForward const *pf, char const *num) {
-  String num_as_str;
-  init_string(&num_as_str, START_ARRAY_SIZE_SMALL);
+  if (pf == NULL)
+    return NULL;
 
-  parse_chars_to_string_wrapper(num, &num_as_str, NULL);
+  if (num == NULL)
+    return phnumNew(0);
+
+  String num_str;
+  if (!init_string(&num_str, START_ARRAY_SIZE_SMALL)) {
+    return phnumNew(0);
+  }
+
+  bool memory_failure = false;
+  if (!parse_chars_to_string_wrapper(num, &num_str, &memory_failure)) {
+    if (!memory_failure) {
+      free_string(&num_str);
+
+      return phnumNew(0);
+    }
+
+    free_string(&num_str);
+
+    return NULL;
+  }
 
   PhoneNumbers *result =
-          get_reversed_numbers(pf->reverse_trie_root, &num_as_str);
+          get_reversed_numbers(pf->reverse_trie_root, &num_str);
+  if (result == NULL) {
+    free_string(&num_str);
 
-  push_back_numbers(result, &num_as_str);
+    return NULL;
+  }
+
+  if (!push_back_numbers(result, &num_str)) {
+    free_string(&num_str);
+    phnumDelete(result);
+
+    return NULL;
+  }
 
 
   qsort(result->numbers_sequence, result->size, sizeof(String),
