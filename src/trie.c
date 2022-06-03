@@ -5,7 +5,6 @@
  * @date 2022
  */
 
-#include <ctype.h>
 #include <stdlib.h>
 
 #include "memory_management.h"
@@ -15,7 +14,27 @@
 /**
  * Struktura implementująca drzewa Trie.
  */
-
+struct Trie {
+  char number;          /**< Prefiks przechowywany w węźle. */
+  bool is_reverse_trie; /**< Wartość @p bool, informująca o typie
+                           przechowywanych wartości. **/
+  union {    /**< Anonimowa unia przechowująca odpowiednie type wartości. **/
+    struct { /**< Anonimowa struktura przechowująca wartości drzewa
+                przekierowań. **/
+      String forward_number; /**< Przekierowywany numer telefony. **/
+      PhoneNumbersPtrSizeTPair
+              *ptr_to_node_in_reverse_trie; /**< Wskaźnik na parę przechowującą
+                                               informację o lokalizacji danej o
+                                               przekierowaniu w drzewie
+                                               odwrotnych przekierowań. **/
+    };
+    PhoneNumbers *reverse_trie_phone_numbers; /**< Wskaźnik na strukturę @p
+                                                 PhoneNumbers przechowującą
+                                                 odwrotne przekierowania. **/
+  };
+  Trie **children; /**< Tablica wskaźników dzieci węzła. */
+  Trie *parent;    /**< Wskaźnik na rodzica węzła. */
+};
 
 bool init_trie(Trie **trie, const char prefix, Trie *parent, bool is_reverse) {
   *trie = malloc(sizeof(Trie));
@@ -96,10 +115,10 @@ void free_trie(Trie *trie, bool update_reverse) {
         free_string(phnumGetString(
                 current_node->ptr_to_node_in_reverse_trie->ptr,
                 current_node->ptr_to_node_in_reverse_trie->number));
-        free_pair_strcut(current_node->ptr_to_node_in_reverse_trie);
+        free_pair_struct(current_node->ptr_to_node_in_reverse_trie);
         free_string(&current_node->forward_number);
       } else {
-        free_pair_strcut(current_node->ptr_to_node_in_reverse_trie);
+        free_pair_struct(current_node->ptr_to_node_in_reverse_trie);
         free_string(&current_node->forward_number);
       }
 
@@ -116,10 +135,10 @@ void free_trie(Trie *trie, bool update_reverse) {
       free_string(phnumGetString(
               current_node->ptr_to_node_in_reverse_trie->ptr,
               current_node->ptr_to_node_in_reverse_trie->number));
-      free_pair_strcut(current_node->ptr_to_node_in_reverse_trie);
+      free_pair_struct(current_node->ptr_to_node_in_reverse_trie);
       free_string(&current_node->forward_number);
     } else {
-      free_pair_strcut(current_node->ptr_to_node_in_reverse_trie);
+      free_pair_struct(current_node->ptr_to_node_in_reverse_trie);
       free_string(&current_node->forward_number);
     }
 
@@ -149,6 +168,13 @@ static void add_child_to_trie(Trie *node, Trie *child) {
   node->children[number_char_to_int(child->number)] = child;
 }
 
+/** @brief Dodaje pusty węzeł.
+ * Dodaje pusty węzeł, podążając ścieżką @p route.
+ * @param[in, out] root - wskaźnik na korzeń drzewa;
+ * @param[in] route - napis reprezentujący drogę do dodawanego węzła.
+ * @return Jeśli alokację pamięci powiodą się, zwraca wskaźnik na ostatni dodany
+ * węzeł. W przeciwnym razie, @p NULL.
+ */
 Trie *add_value_common_part(Trie *root, const String *route) {
   Trie *current_node = root;
   for (size_t i = 0; i < route->size; i++) {
@@ -186,7 +212,7 @@ add_value_normal_trie(Trie *root, const String *route, String *value,
     free_string(
             phnumGetString(node_to_add->ptr_to_node_in_reverse_trie->ptr,
                            node_to_add->ptr_to_node_in_reverse_trie->number));
-    free_pair_strcut(node_to_add->ptr_to_node_in_reverse_trie);
+    free_pair_struct(node_to_add->ptr_to_node_in_reverse_trie);
 
     node_to_add->forward_number = *value;
   }
@@ -213,12 +239,11 @@ PhoneNumbersPtrSizeTPair *add_value_reverse_trie(Trie *root,
     return NULL;
   }
 
-  PhoneNumbersPtrSizeTPair *result =
-          init_ptr_size_pair(node_to_add->reverse_trie_phone_numbers->size - 1,
-                             node_to_add->reverse_trie_phone_numbers);
+  PhoneNumbersPtrSizeTPair *result = init_ptr_size_pair(
+          pnum_size(node_to_add->reverse_trie_phone_numbers) - 1,
+          node_to_add->reverse_trie_phone_numbers);
   if (!check_alloc(result)) {
-    node_to_add->parent
-            ->children[number_char_to_int(node_to_add->number)] =
+    node_to_add->parent->children[number_char_to_int(node_to_add->number)] =
             NULL;
     node_to_add->parent = NULL;
     free_trie(node_to_add, false);
@@ -234,7 +259,7 @@ void remove_subtree(Trie **root, char const *route_to_subtree) {
   Trie *previous_node = NULL;
 
   for (size_t i = 0; route_to_subtree[i] != NULL_CHAR; i++) {
-    if (!is_proper_digit(route_to_subtree[i]))
+    if (!is_valid_digit(route_to_subtree[i]))
       return;
 
     Trie *potential_next_node = get_child(current_node, route_to_subtree[i]);
@@ -341,17 +366,7 @@ PhoneNumbers *get_reversed_numbers(Trie *reverse_trie_root,
   return result;
 }
 
-void free_pair_strcut(PhoneNumbersPtrSizeTPair *pair_struct) {
-  free(pair_struct);
-}
-
-PhoneNumbersPtrSizeTPair *init_ptr_size_pair(size_t number, PhoneNumbers *ptr) {
-  PhoneNumbersPtrSizeTPair *result = malloc(sizeof(PhoneNumbersPtrSizeTPair));
-  if (!check_alloc(result))
-    return NULL;
-
-  result->number = number;
-  result->ptr = ptr;
-
-  return result;
+void detach_node_from_trie(Trie *node) {
+  node->parent->children[number_char_to_int(node->number)] = NULL;
+  node->parent = NULL;
 }

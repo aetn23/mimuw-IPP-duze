@@ -16,13 +16,21 @@
  * numerów telefonów.
  */
 struct PhoneForward {
-  Trie *root; /**< Wskaźnik na korzeń drzewa Trie. */
-  Trie *reverse_trie_root;
+  Trie *root;              /**< Wskaźnik na korzeń drzewa Trie. */
+  Trie *reverse_trie_root; /**< Wskaźnik na korzeń drzewa Trie, przechowującego
+                                odwrotne przekierowania. */
 };
 
 /**
  * Implementacja struktury przechowującej numery telefonów.
  */
+struct PhoneNumbers {
+  String *numbers_sequence; /**< Tablica struktur reprezentujących napisy. */
+  size_t size; /**< Liczba elementów w tablicy @p numbers_sequence. */
+  size_t allocated_size; /**< Liczba elementów, na jakie @p numbers_sequence
+                            ma miejsce w pamięci. */
+};
+
 
 PhoneNumbers *phnumNew(size_t size) {
   PhoneNumbers *result = malloc(sizeof(PhoneNumbers));
@@ -49,16 +57,6 @@ PhoneNumbers *phnumNew(size_t size) {
   return result;
 }
 
-/** @brief Wstawia numer telefonu do struktury.
- * Wstawia numer telefonu do struktury. Alokuje pamięć, jeśli zachodzi taka
- * potrzeba. Funkcja zakłada poprawność parametrów. Po nieudanej alokacji
- * struktura pod wskaźnikiem @p numbers nadal jest poprawna. Przejmuje @p number
- * na własność.
- * @param[in,out] numbers - wskaźnik na strukturę przechowującą numery telefonu;
- * @param[in] number - numer telefonu;
- * @return Wartość @p true, jeśli operacje powiodą się. Wartość @p false, jeśli
- * ewentualna alokacja pamięci nie powiedzie się.
- */
 bool push_back_numbers(PhoneNumbers *numbers, const String *number) {
   if (numbers->size == numbers->allocated_size) {
     String *new_array = realloc(numbers->numbers_sequence,
@@ -165,12 +163,9 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
                                             &num2_string, reverse_trie_result);
   if (!check_alloc(trie_result)) {
     free_string(&num2_string);
-    ptr_to_reverse_trie_node->parent
-            ->children[number_char_to_int(ptr_to_reverse_trie_node->number)] =
-            NULL;
-    ptr_to_reverse_trie_node->parent = NULL;
+    detach_node_from_trie(ptr_to_reverse_trie_node);
     free_trie(ptr_to_reverse_trie_node, false);
-    free_pair_strcut(reverse_trie_result);
+    free_pair_struct(reverse_trie_result);
 
     return false;
   }
@@ -185,15 +180,8 @@ void phfwdRemove(PhoneForward *pf, char const *num) {
 }
 
 char const *phnumGet(PhoneNumbers const *pnum, size_t idx) {
-  if (pnum == NULL || idx >= pnum->size)
+  if (pnum == NULL || idx >= pnum->size || pnum->numbers_sequence->size == 0)
     return NULL;
-
-  if (pnum->numbers_sequence->size == 0)
-    return NULL;
-
-  // if (idx > 0 && strcmp(pnum->numbers_sequence[idx].content,
-  // pnum->numbers_sequence[idx-1].content) == 0)
-  //  return NULL;
 
   return pnum->numbers_sequence[idx].content;
 }
@@ -273,7 +261,11 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
   return result;
 }
 
-
+/** @brief Usuwa duplikaty z @p pnum.
+ * Usuwa duplikaty z @p pnum. Zwalnia pamięć znalezionego duplikatu i w jego
+ * miejsce wstawia strukturę @p String zainicjalizowaną zerami.
+ * @param[in] pnum - Wskaźnik na strukturę @p PhoneNumbers.
+ */
 void remove_repetitions(PhoneNumbers *pnum) {
   for (size_t i = 0; i < pnum->size - 1; i++) {
     if (pnum->numbers_sequence[i].size == 0)
@@ -334,12 +326,14 @@ PhoneNumbers *phfwdReverse(PhoneForward const *pf, char const *num) {
 
 
   qsort(result->numbers_sequence, result->size, sizeof(String),
-        &string_compare);
+        &phone_num_compare);
 
   remove_repetitions(result);
 
   qsort(result->numbers_sequence, result->size, sizeof(String),
-        &string_compare);
+        &phone_num_compare);
 
   return result;
 }
+
+size_t pnum_size(const PhoneNumbers *pnum) { return pnum->size; }
