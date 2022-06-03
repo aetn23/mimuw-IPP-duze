@@ -20,6 +20,11 @@
  */
 typedef struct Trie Trie;
 
+typedef struct PhoneNumbersPtrSizeTPair {
+  size_t number;
+  PhoneNumbers *ptr;
+} PhoneNumbersPtrSizeTPair;
+
 // for debug
 struct Trie {
   char number; /**< Prefiks przechowywany w węźle. */
@@ -27,13 +32,18 @@ struct Trie {
   union {
     struct {
       String forward_number; /**< Przekierowywał numer telefony. */
-      String *ptr_to_node_in_reverse_trie;
+      PhoneNumbersPtrSizeTPair *ptr_to_node_in_reverse_trie;
     };
     PhoneNumbers *reverse_trie_phone_numbers;
   };
   Trie **children; /**< Tablica wskaźników dzieci węzła. */
   Trie *parent;    /**< Wskaźnik na rodzica węzła. */
 };
+
+PhoneNumbersPtrSizeTPair *init_ptr_size_pair(size_t number, PhoneNumbers *ptr);
+
+void free_pair_strcut(PhoneNumbersPtrSizeTPair *pair_struct);
+
 
 /** @brief Inicjuje węzeł Trie.
  * Inicjuje węzeł Trie, ustawiając @p prefix jako prefiks oraz @p parent
@@ -45,7 +55,7 @@ struct Trie {
  * @return @p Wartość true, jeśli alokacja pamięci powiedzie się. Wartość @p
  * false w przeciwnym wypadku.
  */
-bool init_trie(Trie **trie, const char prefix, Trie *parent, bool is_reverse);
+bool init_trie(Trie **trie, char prefix, Trie *parent, bool is_reverse);
 
 /** @brief Zwalnia węzeł i wszystkiego jego dzieci.
  * Zwalnia węzeł i wszystkiego jego dzieci. Funkcja zawsze się powiedzie.
@@ -101,8 +111,8 @@ PhoneNumbers *get_reversed_numbers(Trie *reverse_trie_root,
                                    const String *route);
 
 Trie *add_value_normal_trie(Trie *root, const String *route, String *value,
-                             String *ptr_to_reverse_trie_value);
+                            PhoneNumbersPtrSizeTPair *ptr_to_reverse_trie_value);
 
-String *add_value_reverse_trie(Trie *root, const String *route, String *value, Trie **ptr_to_added_node);
+PhoneNumbersPtrSizeTPair *add_value_reverse_trie(Trie *root, const String *route, String *value, Trie **ptr_to_added_node);
 
 #endif//_TRIE_

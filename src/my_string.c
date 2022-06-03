@@ -66,8 +66,12 @@ static bool null_terminate(String *str) {
 }
 
 void free_string(String *str) {
-  if (str->content != NULL)
+  if (str->allocated_size != 0) {
     free(str->content);
+    str->content = NULL;
+    str->size = 0;
+    str->allocated_size = 0;
+  }
 }
 
 bool concatenate_from_to(const String *first, const String *second,

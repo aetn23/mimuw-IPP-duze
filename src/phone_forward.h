@@ -26,6 +26,14 @@ struct PhoneForward;
  */
 typedef struct PhoneForward PhoneForward;
 
+
+struct PhoneNumbers {
+  String *numbers_sequence; /**< Tablica struktur reprezentujących napisy. */
+  size_t size; /**< Liczba elementów w tablicy @p numbers_sequence. */
+  size_t allocated_size; /**< Liczba elementów, na jakie @p numbers_sequence ma
+                               miejsce w pamięci. */
+};
+
 /**
  * To jest deklaracja struktury przechowującej ciąg numerów telefonów.
  */
@@ -145,9 +153,9 @@ PhoneNumbers *phnumNew(size_t size);
  * @return Wartość @p true, jeśli operacje powiodą się. Wartość @p false, jeśli
  * ewentualna alokacja pamięci nie powiedzie się.
  */
-String *push_back_numbers(PhoneNumbers *numbers, const String *number);
+bool push_back_numbers(PhoneNumbers *numbers, const String *number);
 
-const String *phnumGetString(PhoneNumbers const *pnum, size_t idx);
+String *phnumGetString(PhoneNumbers const *pnum, size_t idx);
 
 
 

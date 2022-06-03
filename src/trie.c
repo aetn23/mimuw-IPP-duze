@@ -93,10 +93,13 @@ void free_trie(Trie *trie, bool update_reverse) {
       if (current_node->is_reverse_trie) {
         phnumDelete(current_node->reverse_trie_phone_numbers);
       } else if (update_reverse && current_node->forward_number.size != 0) {
-        free_string(current_node->ptr_to_node_in_reverse_trie);
-        init_string(current_node->ptr_to_node_in_reverse_trie, 0);
+        free_string(phnumGetString(
+                current_node->ptr_to_node_in_reverse_trie->ptr,
+                current_node->ptr_to_node_in_reverse_trie->number));
+        free_pair_strcut(current_node->ptr_to_node_in_reverse_trie);
         free_string(&current_node->forward_number);
       } else {
+        free_pair_strcut(current_node->ptr_to_node_in_reverse_trie);
         free_string(&current_node->forward_number);
       }
 
@@ -110,10 +113,13 @@ void free_trie(Trie *trie, bool update_reverse) {
     if (current_node->is_reverse_trie) {
       phnumDelete(current_node->reverse_trie_phone_numbers);
     } else if (update_reverse && current_node->forward_number.size != 0) {
-      free_string(current_node->ptr_to_node_in_reverse_trie);
-      init_string(current_node->ptr_to_node_in_reverse_trie, 0);
+      free_string(phnumGetString(
+              current_node->ptr_to_node_in_reverse_trie->ptr,
+              current_node->ptr_to_node_in_reverse_trie->number));
+      free_pair_strcut(current_node->ptr_to_node_in_reverse_trie);
       free_string(&current_node->forward_number);
     } else {
+      free_pair_strcut(current_node->ptr_to_node_in_reverse_trie);
       free_string(&current_node->forward_number);
     }
 
@@ -164,8 +170,9 @@ Trie *add_value_common_part(Trie *root, const String *route) {
   return current_node;
 }
 
-Trie *add_value_normal_trie(Trie *root, const String *route, String *value,
-                            String *ptr_to_reverse_trie_value) {
+Trie *
+add_value_normal_trie(Trie *root, const String *route, String *value,
+                      PhoneNumbersPtrSizeTPair *ptr_to_reverse_trie_value) {
   Trie *node_to_add = add_value_common_part(root, route);
   if (node_to_add == NULL) {
     return NULL;
@@ -176,13 +183,10 @@ Trie *add_value_normal_trie(Trie *root, const String *route, String *value,
     node_to_add->forward_number = *value;
   } else {
     free_string(&node_to_add->forward_number);
-    free_string(node_to_add->ptr_to_node_in_reverse_trie);
-
-    if (!init_string(node_to_add->ptr_to_node_in_reverse_trie, 0)) {
-      free_trie(node_to_add, false);
-
-      return NULL;
-    }
+    free_string(
+            phnumGetString(node_to_add->ptr_to_node_in_reverse_trie->ptr,
+                           node_to_add->ptr_to_node_in_reverse_trie->number));
+    free_pair_strcut(node_to_add->ptr_to_node_in_reverse_trie);
 
     node_to_add->forward_number = *value;
   }
@@ -192,17 +196,37 @@ Trie *add_value_normal_trie(Trie *root, const String *route, String *value,
   return node_to_add;
 }
 
-String *add_value_reverse_trie(Trie *root, const String *route, String *value,
-                               Trie **ptr_to_added_node) {
+PhoneNumbersPtrSizeTPair *add_value_reverse_trie(Trie *root,
+                                                 const String *route,
+                                                 String *value,
+                                                 Trie **ptr_to_added_node) {
   Trie *node_to_add = add_value_common_part(root, route);
   if (!check_alloc(node_to_add)) {
     *ptr_to_added_node = NULL;
-
+    free_string(value);
     return NULL;
   }
 
   *ptr_to_added_node = node_to_add;
-  return push_back_numbers(node_to_add->reverse_trie_phone_numbers, value);
+  if (!push_back_numbers(node_to_add->reverse_trie_phone_numbers, value)) {
+    free_string(value);
+    return NULL;
+  }
+
+  PhoneNumbersPtrSizeTPair *result =
+          init_ptr_size_pair(node_to_add->reverse_trie_phone_numbers->size - 1,
+                             node_to_add->reverse_trie_phone_numbers);
+  if (!check_alloc(result)) {
+    node_to_add->parent
+            ->children[number_char_to_int(node_to_add->number)] =
+            NULL;
+    node_to_add->parent = NULL;
+    free_trie(node_to_add, false);
+
+    return NULL;
+  }
+
+  return result;
 }
 
 void remove_subtree(Trie **root, char const *route_to_subtree) {
@@ -313,6 +337,21 @@ PhoneNumbers *get_reversed_numbers(Trie *reverse_trie_root,
       }
     }
   }
+
+  return result;
+}
+
+void free_pair_strcut(PhoneNumbersPtrSizeTPair *pair_struct) {
+  free(pair_struct);
+}
+
+PhoneNumbersPtrSizeTPair *init_ptr_size_pair(size_t number, PhoneNumbers *ptr) {
+  PhoneNumbersPtrSizeTPair *result = malloc(sizeof(PhoneNumbersPtrSizeTPair));
+  if (!check_alloc(result))
+    return NULL;
+
+  result->number = number;
+  result->ptr = ptr;
 
   return result;
 }

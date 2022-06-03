@@ -23,12 +23,6 @@ struct PhoneForward {
 /**
  * Implementacja struktury przechowującej numery telefonów.
  */
-struct PhoneNumbers {
-  String *numbers_sequence; /**< Tablica struktur reprezentujących napisy. */
-  size_t size; /**< Liczba elementów w tablicy @p numbers_sequence. */
-  size_t allocated_size; /**< Liczba elementów, na jakie @p numbers_sequence ma
-                            miejsce w pamięci. */
-};
 
 PhoneNumbers *phnumNew(size_t size) {
   PhoneNumbers *result = malloc(sizeof(PhoneNumbers));
@@ -65,14 +59,14 @@ PhoneNumbers *phnumNew(size_t size) {
  * @return Wartość @p true, jeśli operacje powiodą się. Wartość @p false, jeśli
  * ewentualna alokacja pamięci nie powiedzie się.
  */
-String *push_back_numbers(PhoneNumbers *numbers, const String *number) {
+bool push_back_numbers(PhoneNumbers *numbers, const String *number) {
   if (numbers->size == numbers->allocated_size) {
     String *new_array = realloc(numbers->numbers_sequence,
                                 numbers->allocated_size * REALLOC_MULTIPLIER *
                                         sizeof(String));
 
     if (!check_alloc(new_array))
-      return NULL;
+      return false;
 
     numbers->numbers_sequence = new_array;
     numbers->allocated_size *= REALLOC_MULTIPLIER;
@@ -81,7 +75,7 @@ String *push_back_numbers(PhoneNumbers *numbers, const String *number) {
   numbers->numbers_sequence[numbers->size] = *number;
   numbers->size++;
 
-  return &(numbers->numbers_sequence[numbers->size - 1]);
+  return true;
 }
 
 void phnumDelete(PhoneNumbers *numbers) {
@@ -89,7 +83,8 @@ void phnumDelete(PhoneNumbers *numbers) {
     return;
 
   for (size_t i = 0; i < numbers->size; i++)
-    free_string(&numbers->numbers_sequence[i]);
+    if (numbers->numbers_sequence[i].size != 0)
+      free_string(&numbers->numbers_sequence[i]);
 
   free(numbers->numbers_sequence);
 
@@ -111,7 +106,7 @@ PhoneForward *phfwdNew() {
   Trie *reverse_trie;
   if (!init_trie(&reverse_trie, NULL_CHAR, NULL, true)) {
     free(result);
-    free(trie);
+    free_trie(trie, false);
 
     return NULL;
   }
@@ -156,13 +151,13 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
 
     return false;
   }
-  Trie *ptr_to_reverse_trie_node;
-  String *reverse_trie_result = add_value_reverse_trie(
-          pf->reverse_trie_root, &num2_string, &num1_string, &ptr_to_reverse_trie_node);
-  if (!check_alloc(reverse_trie_result)) {
-    free_string(&num1_string);
-    free_string(&num2_string);
 
+  Trie *ptr_to_reverse_trie_node;
+  PhoneNumbersPtrSizeTPair *reverse_trie_result =
+          add_value_reverse_trie(pf->reverse_trie_root, &num2_string,
+                                 &num1_string, &ptr_to_reverse_trie_node);
+  if (!check_alloc(reverse_trie_result)) {
+    free_string(&num2_string);
     return false;
   }
 
@@ -170,13 +165,16 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
                                             &num2_string, reverse_trie_result);
   if (!check_alloc(trie_result)) {
     free_string(&num2_string);
+    ptr_to_reverse_trie_node->parent
+            ->children[number_char_to_int(ptr_to_reverse_trie_node->number)] =
+            NULL;
+    ptr_to_reverse_trie_node->parent = NULL;
     free_trie(ptr_to_reverse_trie_node, false);
+    free_pair_strcut(reverse_trie_result);
 
     return false;
   }
 
-
-  // free_string(&num1_string);
 
   return true;
 }
@@ -200,7 +198,7 @@ char const *phnumGet(PhoneNumbers const *pnum, size_t idx) {
   return pnum->numbers_sequence[idx].content;
 }
 
-const String *phnumGetString(PhoneNumbers const *pnum, size_t idx) {
+String *phnumGetString(PhoneNumbers const *pnum, size_t idx) {
   if (pnum == NULL || idx >= pnum->size)
     return NULL;
 
@@ -314,8 +312,13 @@ PhoneNumbers *phfwdReverse(PhoneForward const *pf, char const *num) {
     return NULL;
   }
 
-  PhoneNumbers *result =
-          get_reversed_numbers(pf->reverse_trie_root, &num_str);
+  if (is_empty_string(&num_str)) {
+    free_string(&num_str);
+
+    return phnumNew(0);
+  }
+
+  PhoneNumbers *result = get_reversed_numbers(pf->reverse_trie_root, &num_str);
   if (result == NULL) {
     free_string(&num_str);
 
