@@ -167,6 +167,9 @@ Trie *add_value_common_part(Trie *root, const String *route) {
 Trie *add_value_normal_trie(Trie *root, const String *route, String *value,
                             String *ptr_to_reverse_trie_value) {
   Trie *node_to_add = add_value_common_part(root, route);
+  if (node_to_add == NULL) {
+    return NULL;
+  }
 
 
   if (node_to_add->forward_number.size == 0) {
@@ -175,7 +178,11 @@ Trie *add_value_normal_trie(Trie *root, const String *route, String *value,
     free_string(&node_to_add->forward_number);
     free_string(node_to_add->ptr_to_node_in_reverse_trie);
 
-    init_string(node_to_add->ptr_to_node_in_reverse_trie, 0);
+    if (!init_string(node_to_add->ptr_to_node_in_reverse_trie, 0)) {
+      free_trie(node_to_add, false);
+
+      return NULL;
+    }
 
     node_to_add->forward_number = *value;
   }
@@ -185,12 +192,18 @@ Trie *add_value_normal_trie(Trie *root, const String *route, String *value,
   return node_to_add;
 }
 
-String *add_value_reverse_trie(Trie *root, const String *route, String *value) {
+String *add_value_reverse_trie(Trie *root, const String *route, String *value,
+                               Trie **ptr_to_added_node) {
   Trie *node_to_add = add_value_common_part(root, route);
+  if (!check_alloc(node_to_add)) {
+    *ptr_to_added_node = NULL;
 
+    return NULL;
+  }
+
+  *ptr_to_added_node = node_to_add;
   return push_back_numbers(node_to_add->reverse_trie_phone_numbers, value);
 }
-
 
 void remove_subtree(Trie **root, char const *route_to_subtree) {
   Trie *current_node = *root;

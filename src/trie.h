@@ -103,6 +103,6 @@ PhoneNumbers *get_reversed_numbers(Trie *reverse_trie_root,
 Trie *add_value_normal_trie(Trie *root, const String *route, String *value,
                              String *ptr_to_reverse_trie_value);
 
-String *add_value_reverse_trie(Trie *root, const String *route, String *value);
+String *add_value_reverse_trie(Trie *root, const String *route, String *value, Trie **ptr_to_added_node);
 
 #endif//_TRIE_

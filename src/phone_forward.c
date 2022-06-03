@@ -72,7 +72,7 @@ String *push_back_numbers(PhoneNumbers *numbers, const String *number) {
                                         sizeof(String));
 
     if (!check_alloc(new_array))
-      return false;
+      return NULL;
 
     numbers->numbers_sequence = new_array;
     numbers->allocated_size *= REALLOC_MULTIPLIER;
@@ -156,9 +156,9 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
 
     return false;
   }
-
+  Trie *ptr_to_reverse_trie_node;
   String *reverse_trie_result = add_value_reverse_trie(
-          pf->reverse_trie_root, &num2_string, &num1_string);
+          pf->reverse_trie_root, &num2_string, &num1_string, &ptr_to_reverse_trie_node);
   if (!check_alloc(reverse_trie_result)) {
     free_string(&num1_string);
     free_string(&num2_string);
@@ -169,10 +169,8 @@ bool phfwdAdd(PhoneForward *pf, char const *num1, char const *num2) {
   Trie *trie_result = add_value_normal_trie(pf->root, &num1_string,
                                             &num2_string, reverse_trie_result);
   if (!check_alloc(trie_result)) {
-    free_string(&num1_string);
     free_string(&num2_string);
-    // free_trie(reverse_trie_result, false);
-
+    free_trie(ptr_to_reverse_trie_node, false);
 
     return false;
   }
