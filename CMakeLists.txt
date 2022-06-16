@@ -29,7 +29,10 @@ set(SOURCE_FILES
     src/my_string.c
     src/my_string.h
     src/memory_management.c
-    src/memory_management.h)
+    src/memory_management.h
+    src/phnum_ptr_int_pair.c
+    src/phnum_ptr_int_pair.h
+        )
 
 # Wskazujemy plik wykonywalny.
 add_executable(phone_forward ${SOURCE_FILES})

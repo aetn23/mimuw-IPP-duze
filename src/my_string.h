@@ -126,4 +126,21 @@ int number_char_to_int(char number);
 bool parse_chars_to_string_wrapper(char const *chars, String *result,
                                    bool *memory_failure);
 
+/** @brief Porównuje dwa numery telefonu.
+ * Porównuje dwa numery telefonu leksykograficznie.
+ * @param[in] str1 - wskaźnik na pierwszy numer;
+ * @param[in] str2 - wskaźnik na pierwszy numer;
+ * @return Wartość @p 0 jeśli numery są identyczne, 1 jeśli @p str2 jest większy
+ * w sensie porządku leksykograficznego.
+ */
+int phone_num_compare(const void *str1, const void *str2);
+
+/** @brief Sprawdza, czy znak jest poprawnym znakiem numeru telefonu.
+ * Sprawdza, czy znak jest poprawnym znakiem numeru telefonu.
+ * @param[in] digit - znak;
+ * @return @p true jeśli znak jest poprawnym znakiem numeru teleofnu, @p false w
+ * przeciwnym wypadku.
+ */
+bool is_valid_digit(char digit);
+
 #endif//_MY_STRING_

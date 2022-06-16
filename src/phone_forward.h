@@ -13,6 +13,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include "my_string.h"
+
 
 /**
  * To jest deklaracja struktury przechowującej przekierowania numerów telefonów.
@@ -92,9 +94,9 @@ void phfwdRemove(PhoneForward *pf, char const *num);
 PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num);
 
 /** @brief Wyznacza przekierowania na dany numer.
- * Wyznacza następujący ciąg numerów: jeśli istnieje numer @p x, taki że wynik
- * wywołania @p phfwdGet z numerem @p x zawiera numer @p num, to numer @p x
- * należy do wyniku wywołania @ref phfwdReverse z numerem @p num. Dodatkowo ciąg
+ * Wyznacza następujący ciag odwrotności @p num. Odwrotność jest rozumiana jako
+ * takie num, że phfwdGet(pf, num) daje strukturę @p PhoneNumbers
+ * przechowująca numer równy @p num. Dodatkowo ciąg
  * wynikowy zawsze zawiera też numer @p num. Wynikowe numery są posortowane
  * leksykograficznie i nie mogą się powtarzać. Jeśli podany napis nie
  * reprezentuje numeru, wynikiem jest pusty ciąg. Alokuje strukturę
@@ -122,5 +124,47 @@ void phnumDelete(PhoneNumbers *pnum);
  *         wskaźnik @p pnum ma wartość NULL lub indeks ma za dużą wartość.
  */
 char const *phnumGet(PhoneNumbers const *pnum, size_t idx);
+
+
+/** @brief Tworzy nową strukturę.
+ * Tworzy nową strukturę przechowującą numery telefonu. Alokuje pamięć na @p
+ * size numerów telefonu. Jeśli @p size ma wartość zero, nie alokuje pamięci.
+ * @param[in] size - liczba numerów telefonów, na jaką struktura ma mieć pamięć;
+ * @return Wskaźnik na utworzoną strukturę, lub @p NULL gdy nie udało się
+ * zaalokować pamięci.
+ */
+PhoneNumbers *phnumNew(size_t size);
+
+
+/** @brief Wstawia numer telefonu do struktury.
+ * Wstawia numer telefonu do struktury. Alokuje pamięć, jeśli zachodzi taka
+ * potrzeba. Funkcja zakłada poprawność parametrów. Po nieudanej alokacji
+ * struktura pod wskaźnikiem @p numbers nadal jest poprawna.
+ * @param[in,out] numbers - wskaźnik na strukturę przechowującą numery telefonu;
+ * @param[in] number - numer telefonu;
+ * @return Wartość @p true, jeśli operacje powiodą się. Wartość @p false, jeśli
+ * ewentualna alokacja pamięci nie powiedzie się.
+ */
+bool push_back_numbers(PhoneNumbers *numbers, const String *number);
+
+/** @brief Znajduje pierwszy napis ze struktury @p pnum, różny od @p NULL i o
+ * indeksie większym od @p idx.
+ * Znajduje pierwszy napis ze struktury @p pnum, różny od @p NULL i o
+ * indeksie większym od @p idx. Jeśli taki nie istnieje, lub argumenty nie są
+ * prawidłowe, zwraca @p NULL.
+ * @param[in] pnum - wskaźnik na strukturę PhoneNumbers;
+ * @param[in] idx - indeks szukanego napisu;
+ * @return Wskaźnik na strukturę reprezentującą napis, który spełnia warunki
+ * opisane wyżej. Jeśli taki nie istnieje, wynik to @p NULL.
+ */
+String *phnum_get_string(const PhoneNumbers *pnum, size_t idx);
+
+/** @brief Zwraca rozmiar struktury @p pnum.
+ * Zwraca rozmiar struktury @p pnum, czyli liczbę elementów jakie przechowuje.
+ * Zakłada poprawność argumentów.
+ * @param[in] pnum - Wskaźnik na strukturę PhoneNumbers;
+ * @return Rozmiar wskazywanej przez @p pnum struktury.
+ */
+size_t pnum_size(const PhoneNumbers *pnum);
 
 #endif /* __PHONE_FORWARD_H__ */

@@ -6,10 +6,8 @@
  * @date 2022
  */
 
-#include <ctype.h>
-
-#include "memory_management.h"
 #include "my_string.h"
+#include "memory_management.h"
 
 bool init_string(String *str, const size_t size) {
   if (size != 0) {
@@ -66,8 +64,12 @@ static bool null_terminate(String *str) {
 }
 
 void free_string(String *str) {
-  if (str->content != NULL)
+  if (str->allocated_size != 0) {
     free(str->content);
+    str->content = NULL;
+    str->size = 0;
+    str->allocated_size = 0;
+  }
 }
 
 bool concatenate_from_to(const String *first, const String *second,
@@ -90,25 +92,19 @@ bool is_empty_string(const String *string) {
   return !(bool) strcmp(string->content, EMPTY_STRING);
 }
 
-int number_char_to_int(const char number) { 
+int number_char_to_int(const char number) {
   if (number == '*')
     return 10;
   if (number == '#')
     return 11;
-  else if (number >= '0' && number <= '9')
+  else
     return (int) (number - '0');
-}
-
-static bool is_proper_digit(char digit) {
-  if (digit == '*' || digit == '#' || (digit > '0' && digit < '9'))
-    return true;
-  return false;
 }
 
 bool parse_chars_to_string_wrapper(char const *chars, String *result,
                                    bool *memory_failure) {
   for (size_t i = 0; chars[i] != NULL_CHAR; i++) {
-    if (!is_proper_digit(chars[i]))
+    if (!is_valid_digit(chars[i]))
       return false;
 
     if (!insert_str(result, chars[i], result->size)) {
@@ -120,4 +116,42 @@ bool parse_chars_to_string_wrapper(char const *chars, String *result,
   }
 
   return null_terminate(result);
+}
+
+int phone_num_compare(const void *str1, const void *str2) {
+  if (((String *) str1)->content == NULL && ((String *) str2)->content == NULL)
+    return 0;
+  else if (((String *) str1)->size == 0)
+    return 1;
+  else if (((String *) str2)->size == 0)
+    return -1;
+
+  size_t smaller_size;
+  if (((String *) str1)->size > ((String *) str2)->size)
+    smaller_size = ((String *) str1)->size;
+  else
+    smaller_size = ((String *) str2)->size;
+
+  for (size_t i = 0; i < smaller_size; i++) {
+    if (number_char_to_int(((String *) str1)->content[i]) >
+        number_char_to_int(((String *) str2)->content[i]))
+      return 1;
+    else if (number_char_to_int(((String *) str1)->content[i]) <
+             number_char_to_int(((String *) str2)->content[i]))
+      return -1;
+  }
+
+  if (((String *) str1)->size > ((String *) str2)->size)
+    return -1;
+  else if (((String *) str1)->size < ((String *) str2)->size)
+    return 1;
+
+  return 0;
+}
+
+
+bool is_valid_digit(char digit) {
+  if (digit == '*' || digit == '#' || (digit >= '0' && digit <= '9'))
+    return true;
+  return false;
 }
