@@ -1,3 +1,10 @@
+/** @file
+* Implementacja modułu pary wskaźnika i liczby.
+* @author Mikołaj Piróg
+* @copyright Mikołaj Piróg
+* @date 2022
+*/
+
 #include "phnum_ptr_int_pair.h"
 #include "memory_management.h"
 

@@ -112,7 +112,7 @@ void free_trie(Trie *trie, bool update_reverse) {
       if (current_node->is_reverse_trie) {
         phnumDelete(current_node->reverse_trie_phone_numbers);
       } else if (update_reverse && current_node->forward_number.size != 0) {
-        free_string(phnumGetString(
+        free_string(phnum_get_string(
                 current_node->ptr_to_node_in_reverse_trie->ptr,
                 current_node->ptr_to_node_in_reverse_trie->number));
         free_pair_struct(current_node->ptr_to_node_in_reverse_trie);
@@ -132,7 +132,7 @@ void free_trie(Trie *trie, bool update_reverse) {
     if (current_node->is_reverse_trie) {
       phnumDelete(current_node->reverse_trie_phone_numbers);
     } else if (update_reverse && current_node->forward_number.size != 0) {
-      free_string(phnumGetString(
+      free_string(phnum_get_string(
               current_node->ptr_to_node_in_reverse_trie->ptr,
               current_node->ptr_to_node_in_reverse_trie->number));
       free_pair_struct(current_node->ptr_to_node_in_reverse_trie);
@@ -175,7 +175,7 @@ static void add_child_to_trie(Trie *node, Trie *child) {
  * @return Jeśli alokację pamięci powiodą się, zwraca wskaźnik na ostatni dodany
  * węzeł. W przeciwnym razie, @p NULL.
  */
-Trie *add_value_common_part(Trie *root, const String *route) {
+static Trie *add_value_common_part(Trie *root, const String *route) {
   Trie *current_node = root;
   for (size_t i = 0; i < route->size; i++) {
     Trie *next_node = get_child(current_node, route->content[i]);
@@ -210,8 +210,8 @@ add_value_normal_trie(Trie *root, const String *route, String *value,
   } else {
     free_string(&node_to_add->forward_number);
     free_string(
-            phnumGetString(node_to_add->ptr_to_node_in_reverse_trie->ptr,
-                           node_to_add->ptr_to_node_in_reverse_trie->number));
+            phnum_get_string(node_to_add->ptr_to_node_in_reverse_trie->ptr,
+                             node_to_add->ptr_to_node_in_reverse_trie->number));
     free_pair_struct(node_to_add->ptr_to_node_in_reverse_trie);
 
     node_to_add->forward_number = *value;
@@ -338,7 +338,7 @@ PhoneNumbers *get_reversed_numbers(Trie *reverse_trie_root,
 
     if (current_node->reverse_trie_phone_numbers != NULL) {
       size_t j = 0;
-      while (phnumGetString(current_node->reverse_trie_phone_numbers, j) !=
+      while (phnum_get_string(current_node->reverse_trie_phone_numbers, j) !=
              NULL) {
         String reverse_number;
         if (!init_string(&reverse_number, START_ARRAY_SIZE_SMALL)) {
@@ -349,7 +349,8 @@ PhoneNumbers *get_reversed_numbers(Trie *reverse_trie_root,
 
 
         if (!concatenate_from_to(
-                    phnumGetString(current_node->reverse_trie_phone_numbers, j),
+                    phnum_get_string(current_node->reverse_trie_phone_numbers,
+                                     j),
                     route, i + 1, route->size, &reverse_number) ||
             !push_back_numbers(result, &reverse_number)) {
           phnumDelete(result);

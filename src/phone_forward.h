@@ -157,7 +157,7 @@ bool push_back_numbers(PhoneNumbers *numbers, const String *number);
  * @return Wskaźnik na strukturę reprezentującą napis, który spełnia warunki
  * opisane wyżej. Jeśli taki nie istnieje, wynik to @p NULL.
  */
-String *phnumGetString(const PhoneNumbers *pnum, size_t idx);
+String *phnum_get_string(const PhoneNumbers *pnum, size_t idx);
 
 /** @brief Zwraca rozmiar struktury @p pnum.
  * Zwraca rozmiar struktury @p pnum, czyli liczbę elementów jakie przechowuje.

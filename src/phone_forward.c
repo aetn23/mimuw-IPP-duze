@@ -186,7 +186,7 @@ char const *phnumGet(PhoneNumbers const *pnum, size_t idx) {
   return pnum->numbers_sequence[idx].content;
 }
 
-String *phnumGetString(PhoneNumbers const *pnum, size_t idx) {
+String *phnum_get_string(PhoneNumbers const *pnum, size_t idx) {
   if (pnum == NULL || idx >= pnum->size)
     return NULL;
 
@@ -266,7 +266,7 @@ PhoneNumbers *phfwdGet(PhoneForward const *pf, char const *num) {
  * miejsce wstawia strukturę @p String zainicjalizowaną zerami.
  * @param[in] pnum - Wskaźnik na strukturę @p PhoneNumbers.
  */
-void remove_repetitions(PhoneNumbers *pnum) {
+static void remove_repetitions(PhoneNumbers *pnum) {
   for (size_t i = 0; i < pnum->size - 1; i++) {
     if (pnum->numbers_sequence[i].size == 0)
       return;
