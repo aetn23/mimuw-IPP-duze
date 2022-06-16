@@ -167,4 +167,6 @@ String *phnum_get_string(const PhoneNumbers *pnum, size_t idx);
  */
 size_t pnum_size(const PhoneNumbers *pnum);
 
+PhoneNumbers * phfwdGetReverse(PhoneForward const *pf, char const *num);
+
 #endif /* __PHONE_FORWARD_H__ */

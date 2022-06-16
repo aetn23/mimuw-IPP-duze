@@ -337,3 +337,17 @@ PhoneNumbers *phfwdReverse(PhoneForward const *pf, char const *num) {
 }
 
 size_t pnum_size(const PhoneNumbers *pnum) { return pnum->size; }
+
+PhoneNumbers *phfwdGetReverse(PhoneForward const *pf, char const *num) {
+  PhoneNumbers *reverse_result = phfwdReverse(pf, num);
+  PhoneNumbers *result = phnumNew(START_ARRAY_SIZE_SMALL);
+
+  for(size_t i = 0; i < reverse_result->size; i++) {
+    if (strcmp(num, phfwdGet(pf, reverse_result->numbers_sequence[i].content)->numbers_sequence->content)) {
+      push_back_numbers(result, &reverse_result->numbers_sequence[i]);
+    }
+  }
+
+  return result;
+
+}
