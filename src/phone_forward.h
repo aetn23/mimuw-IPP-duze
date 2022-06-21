@@ -167,4 +167,15 @@ String *phnum_get_string(const PhoneNumbers *pnum, size_t idx);
  */
 size_t pnum_size(const PhoneNumbers *pnum);
 
+/** @brief Wyznacza przeciwobraz funkcji @p phfwdGet.
+ * Wyznacza przeciwobraz funkcji @p phfwdGet. Zwraca wskaźnik na strukturę @p
+ * PhoneNumbers, zawierającą takie numery x, że @p phfwdGet(x) = @p num.
+ * @param[in] pf - Wskaźnik na strukturę PhoneForward;
+ * @param[in] num - wskaźnik na ciąg znaków reprezentujący numer;
+ * @return Wskaźnik na strukturę reprezentującą napis, który spełnia warunki
+ * opisane wyżej. @p NULL, gdy alokacja pamięci nie powietrze się. Gdy @p num
+ * nie reprezentuje numeru, wynik to pusta struktura @p PhoneNumbers.
+ */
+PhoneNumbers *phfwdGetReverse(PhoneForward const *pf, char const *num);
+
 #endif /* __PHONE_FORWARD_H__ */

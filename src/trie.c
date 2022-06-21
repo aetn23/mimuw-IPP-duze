@@ -11,6 +11,7 @@
 #include "phone_forward.h"
 #include "trie.h"
 
+
 /**
  * Struktura implementująca drzewa Trie.
  */

@@ -20,7 +20,7 @@ typedef struct PhoneNumbersPtrSizeTPair PhoneNumbersPtrSizeTPair;
  * size_t.
  */
 struct PhoneNumbersPtrSizeTPair {
-  size_t number; /**< Numer **/
+  size_t number;     /**< Numer **/
   PhoneNumbers *ptr; /**< Wskaźnik na strukturę @p PhoneNumbers **/
 };
 
